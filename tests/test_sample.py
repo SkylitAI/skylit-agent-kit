@@ -1,6 +1,7 @@
 import copy
 import json
 import socket
+import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -55,6 +56,14 @@ class SampleTests(unittest.TestCase):
 
     def test_example_fixture_is_json(self):
         self.assertTrue(json.loads(FIXTURE.read_text())["synthetic"])
+
+    def test_oversized_and_deep_fixtures_fail_cleanly(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "fixture.json"
+            for content in (" " * 65537, "[" * 2000 + "0" + "]" * 2000):
+                path.write_text(content)
+                with self.assertRaises(ValueError):
+                    load_fixture(path)
 
 
 if __name__ == "__main__":

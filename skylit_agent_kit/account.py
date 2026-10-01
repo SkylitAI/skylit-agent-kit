@@ -2,6 +2,7 @@
 
 import json
 import re
+from http.client import HTTPException
 from urllib.error import HTTPError, URLError
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
@@ -40,7 +41,7 @@ def read_account(api_key):
             503: "Service unavailable; try manually later.",
         }.get(error.code, "Check the official service documentation.")
         raise AccountError(f"Account request stopped (HTTP {error.code}). {guidance} No retry was sent.") from None
-    except (URLError, OSError):
+    except (URLError, OSError, HTTPException):
         raise AccountError("Connection failed. Check connectivity and TLS; no retry was sent.") from None
     if len(body) > 1048576:
         raise AccountError("Account response exceeded 1 MiB.")

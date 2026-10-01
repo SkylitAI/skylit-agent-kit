@@ -1,5 +1,6 @@
 import io
 import unittest
+from http.client import IncompleteRead
 from urllib.error import HTTPError, URLError
 from unittest.mock import patch
 
@@ -50,6 +51,13 @@ class AccountTests(unittest.TestCase):
         with self.assertRaisesRegex(AccountError, "Connection failed") as context:
             read_account("test-placeholder")
         self.assertNotIn("private diagnostics", str(context.exception))
+
+    @patch("skylit_agent_kit.account.build_opener")
+    def test_interrupted_response_is_sanitized(self, factory):
+        factory.return_value.open.return_value.__enter__.return_value.read.side_effect = IncompleteRead(b"private body")
+        with self.assertRaisesRegex(AccountError, "Connection failed") as context:
+            read_account("test-placeholder")
+        self.assertNotIn("private body", str(context.exception))
 
 
 if __name__ == "__main__":

@@ -16,7 +16,13 @@ def load_fixture(path):
         raw = stream.read(65537)
     if len(raw) > 65536:
         raise ValueError("Fixture exceeds 64 KiB")
-    return json.loads(raw)
+    try:
+        data = json.loads(raw)
+    except RecursionError:
+        raise ValueError("Fixture JSON is nested too deeply") from None
+    if not isinstance(data, dict):
+        raise ValueError("Fixture must be a JSON object")
+    return data
 
 
 def render_brief(data, source="examples/fixtures/demo.json"):
