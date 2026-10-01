@@ -246,3 +246,21 @@ class AdditionalWatchlistTests(unittest.TestCase):
         self.assertIn('3 largest returned strike magnitudes of 92', report)
         self.assertLess(len(report.splitlines()), 70)
         self.assertEqual(len(result['raw'][0]['response']['data']['symbols'][0]['strikes']), 92)
+
+
+    @patch('skylit_agent_kit.watchlist.build_opener')
+    def test_default_plan_requires_all_ten_paid_calls_in_current_rate_allowance(self, opener):
+        account_response = io.BytesIO(json.dumps(ACCOUNT).encode())
+        account_response.headers = {'X-RateLimit-Remaining': '6'}
+        catalog_response = io.BytesIO(json.dumps(CATALOG).encode())
+        catalog_response.headers = {'X-RateLimit-Remaining': '5'}
+        opener.return_value.open.side_effect = [account_response, catalog_response]
+        client = Client('synthetic-key')
+        result = run_watchlist(client)
+        self.assertEqual(len(result['symbols']), 8)
+        self.assertEqual(len(result['plan']['calls']), 10)
+        self.assertIn('rate allowance is below the complete plan', result['stop'])
+        self.assertEqual((client.requests, client.credits), (2, 0))
+        self.assertEqual(opener.return_value.open.call_count, 2)
+        paths = [call.args[0].full_url for call in opener.return_value.open.call_args_list]
+        self.assertEqual(paths, ['https://api.skylit.ai/v1/account', 'https://api.skylit.ai/v1/symbols'])

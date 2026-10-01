@@ -227,7 +227,7 @@ def run_watchlist(client, symbols=DEFAULT_SYMBOLS, max_credits=10, max_requests=
         if plan['credits'] > max_credits or plan['requests'] > min(max_requests, rpm):
             raise WatchlistError(f'Plan exceeds budget: requires {plan["requests"]} requests and {plan["credits"]} documented credits; no paid requests sent.')
         allowance = getattr(client, 'rate_remaining', None)
-        if allowance is not None and plan['credits'] > allowance:
+        if allowance is not None and len(plan['calls']) > allowance:
             raise WatchlistError('Server rate allowance is below the complete plan; no paid requests sent. Try manually later.')
         if account.get('unlimited') is not True and plan['credits'] > balance:
             raise WatchlistError('Account credit balance is below the complete plan; no paid requests sent.')
