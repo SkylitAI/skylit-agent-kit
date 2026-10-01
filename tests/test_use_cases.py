@@ -134,3 +134,15 @@ class UseCaseTests(unittest.TestCase):
             for identity, payload in data.items():
                 entry=get_endpoint(identity)
                 self.assertTrue(valid(payload,entry['schema'],get_contract(entry['service'])),identity)
+
+    def test_all_recipe_reports_keep_attribution_without_rendering_source_links(self):
+        for name in ('price-levels', 'flow-investigator', 'volatility-context'):
+            data = u.load_json(u.FIXTURES / (name + '.json'))
+            first = next(iter(data.values()))
+            first.setdefault('meta', {})['attribution'] = {'text': 'Powered by Skylit', 'url': 'javascript:alert(1)'}
+            first['disclaimer'] = '<img src=x onerror=alert(1)> source warning'
+            text = render_recipe(name, data, 'SPY', 'gamma', START, END)
+            self.assertIn('[Data: Skylit](https://skylit.ai/)', text)
+            self.assertIn('Powered by Skylit', text)
+            self.assertIn('source warning', text)
+            self.assertNotIn('<img', text)

@@ -10,6 +10,7 @@ from urllib.parse import urlencode
 from urllib.request import Request, build_opener
 
 from .account import NoRedirect, reject_constant
+from .attribution import credit, notice_metadata, safe_metadata
 
 BASE = 'https://api.skylit.ai'
 DEFAULT_SYMBOLS = 'SPXW,SPY,QQQ,TSLA,MSFT,AAPL,AMZN,META'
@@ -198,7 +199,7 @@ def run_watchlist(client, symbols=DEFAULT_SYMBOLS, max_credits=10, max_requests=
     if trading_date is not None and not valid_date(trading_date): raise WatchlistError('Use --date YYYY-MM-DD.')
     result = {'symbols': symbols, 'retrieved_at': datetime.now(timezone.utc).isoformat(),
         'rows': {s: {k: missing('not requested: run stopped before this component') for k in (*METRICS, 'flow')} for s in symbols},
-        'stop': 'completed', 'sources': [], 'raw': [], 'flow_limit': flow_limit, 'date': trading_date}
+        'stop': 'completed', 'sources': [], 'source_notices': [], 'raw': [], 'flow_limit': flow_limit, 'date': trading_date}
     try:
         account = client.get('/v1/account').get('data')
         if not isinstance(account, dict) or account.get('status') != 'active' or account.get('apiEligible') is not True:
@@ -243,6 +244,8 @@ def run_watchlist(client, symbols=DEFAULT_SYMBOLS, max_credits=10, max_requests=
             try:
                 for symbol in batch: result['rows'][symbol][kind] = missing('request in progress; result unavailable')
                 payload = client.get(path, params, cost=1)
+                notices = notice_metadata(payload)
+                if notices: result['source_notices'].append({'url': source, 'notices': notices})
                 if save_raw: result['raw'].append({'url': source, 'response': payload})
                 if kind == 'flow': result['rows'][batch[0]][kind] = parse_flow(payload, batch[0])
                 else:
@@ -283,7 +286,7 @@ def flow_summary(flow):
 def render_report(result):
     lines = ['# Skylit watchlist · GEX / VEX / recent flow', '',
         f'Retrieval started: {result["retrieved_at"]}', f'Stopping reason: {result["stop"]}', '',
-        'Source values from REST (display rounded to six significant digits); no local proprietary calculations or trade recommendation.',
+        credit() + ' · Source values from REST (display rounded to six significant digits); no local proprietary calculations or trade recommendation.',
         'GEX = requested gamma; VEX = requested vanna. Each board covers up to 92 strikes and the nearest 5 expirations, not the whole chain.',
         f'Flow window: 1d; date: {result["date"] or "service-selected trading date (may be last session)"}; at most {result["flow_limit"]} recent trades per symbol.',
         'Separate requests are not an atomic snapshot. Compare the board and trade timestamps before use; no freshness guarantee.', '',
@@ -320,6 +323,8 @@ def render_report(result):
         'Next steps: [reading hints and local extensions](https://github.com/SkylitAI/skylit-agent-kit/blob/main/docs/using-watchlist-data.md). Start with saved data; no new calls.'])
     lines.extend(['', '## Sources and usage', '', '[Public heatmap contract](https://www.skylit.ai/docs/openapi.yaml) · [Public flow contract](https://www.skylit.ai/docs/flowseeker-openapi.yaml)', ''])
     lines.extend(f'- [{url}]({url})' for url in result['sources'])
+    lines.extend('Source notices for ' + safe_metadata(item['url']) + ': ' + safe_metadata(item['notices'])
+                 for item in result.get('source_notices', []))
     lines.extend(['', f'{result["requests"]} requests attempted; {result["credits_reserved"]} documented credits reserved for attempts; no retries or model calls.',
         'Reserved credits are a conservative estimate, not verified billing or a transactional cap on shared-account spending.', ''])
     return '\n'.join(lines)

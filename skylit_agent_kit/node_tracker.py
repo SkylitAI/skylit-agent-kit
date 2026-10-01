@@ -3,6 +3,8 @@ from .use_case_errors import UseCaseError
 import math
 import json
 import re
+import textwrap
+from .attribution import SKYLIT_URL, credit, notice_metadata, safe_metadata
 from collections import Counter
 from datetime import date, datetime, timezone
 from html import escape
@@ -31,8 +33,8 @@ def expiries(values):
 
 
 def source_metadata(meta):
-    selected = {k: meta[k] for k in ('mode', 'resolution', 'delayed', 'delayMinutes', 'attribution') if k in meta}
-    return escape(json.dumps(selected, ensure_ascii=True)).replace('|', '&#124;').replace('`', '&#96;')
+    selected = {k: meta[k] for k in ('mode', 'resolution', 'delayed', 'delayMinutes', 'attribution', 'disclaimer', 'disclaimers') if k in meta}
+    return safe_metadata(selected)
 
 
 def track(payload, symbol, metric, strikes, expiration_set):
@@ -93,7 +95,7 @@ def track(payload, symbol, metric, strikes, expiration_set):
     except (KeyError, TypeError, AttributeError):
         raise UseCaseError('Invalid historical/range response shape.') from None
     return {'symbol': symbol, 'metric': metric, 'expirations': list(expected), 'series': series,
-            'source_meta': source_metadata(payload['meta']), 'from': data['from'], 'to': data['to'], 'frame_count': len(frames), 'unique_times': len(seen)}
+            'source_meta': source_metadata(payload['meta']), 'source_notices': notice_metadata(payload), 'from': data['from'], 'to': data['to'], 'frame_count': len(frames), 'unique_times': len(seen)}
 
 
 def fmt(value):
@@ -113,9 +115,12 @@ def chart(result, synthetic=False):
     x = lambda t: 95 + 730 * (t - xmin) / (xmax - xmin or 1)
     y = lambda v: 345 - 235 * (v / scale - ymin) / (ymax - ymin)
     title = f"{result['symbol']} · {result['metric']} · fixed strikes"
-    out = ['<svg xmlns="http://www.w3.org/2000/svg" width="960" height="460" viewBox="0 0 960 460" role="img">',
+    notices = result.get('source_notices', {})
+    notice_lines = textwrap.wrap('Source notices: ' + json.dumps(notices, ensure_ascii=True), width=115) if notices else []
+    height = 490 + 16 * len(notice_lines)
+    out = [f'<svg xmlns="http://www.w3.org/2000/svg" width="960" height="{height}" viewBox="0 0 960 {height}" role="img">',
         f'<title>{escape(title)}</title><desc>Signed exposure; zero line; gaps are not interpolated. Time axis uses actual UTC spacing.</desc>',
-        '<rect width="960" height="460" fill="#f7f5f0"/>', '<g font-family="sans-serif" fill="#17292e">',
+        f'<rect width="960" height="{height}" fill="#f7f5f0"/>', '<g font-family="sans-serif" fill="#17292e">',
         f'<text x="45" y="35" font-size="22">{escape(title)}</text>',
         f'<text x="45" y="60" font-size="13">{"SYNTHETIC / FICTIONAL DATA" if synthetic else "SOURCE DATA / freshness not certified"}</text>',
         f'<text x="45" y="82" font-size="12">Expirations: {escape(", ".join(result["expirations"]))}</text>',
@@ -137,14 +142,21 @@ def chart(result, synthetic=False):
     for t, anchor in ((xmin, 'start'), (xmax, 'end')):
         label = datetime.fromtimestamp(t, timezone.utc).isoformat() if times else 'No observations'
         out.append(f'<text x="{x(t):.2f}" y="377" text-anchor="{anchor}" font-size="11">{label}</text>')
-    out.append('<text x="45" y="414" font-size="12">Signed source exposure · gaps break lines · no interpolated observations</text></g></svg>')
+    out.append('<text x="45" y="414" font-size="12">Signed source exposure · gaps break lines · no interpolated observations</text>')
+    label = 'Demo by Skylit (fictional data)' if synthetic else 'Data: Skylit'
+    out.append(f'<a href="{SKYLIT_URL}"><text x="45" y="439" font-size="13" text-decoration="underline">{label} · skylit.ai</text></a>')
+    out.append('<text x="45" y="460" font-size="12">Research observations only; no trade advice. Attribution does not grant permission to publish data.</text>')
+    for i, line in enumerate(notice_lines):
+        out.append(f'<text x="45" y="{481 + 16*i}" font-size="12">{escape(line)}</text>')
+    out.append('</g></svg>')
     return '\n'.join(out)
 
 
 def report(result, synthetic=False):
-    lines = ['# Fixed-strike node tracker', '', '**SYNTHETIC / FICTIONAL DATA**' if synthetic else '**Source data — freshness not certified**', '',
+    lines = ['# Fixed-strike node tracker', '', credit(synthetic), '', '**SYNTHETIC / FICTIONAL DATA**' if synthetic else '**Source data — freshness not certified**', '',
         f"Symbol: {result['symbol']} · metric: {result['metric']} · expirations: {', '.join(result['expirations'])}",
-        f"Source metadata: {result['source_meta']}", '',
+        f"Source metadata: {result['source_meta']}",
+        'Source notices: ' + safe_metadata(result.get('source_notices', {})), '',
         f"Requested response coverage: {result['from']} → {result['to']}; {result['frame_count']} frames / {result['unique_times']} unique times.", '',
         ('No observations returned. No changes can be established.' if not result['unique_times'] else 'Observed frames shown below.'), '',
         'Missing strikes, duplicate timestamps and changed expiry sets remain gaps. Tables show at most 200 timestamps per strike; the SVG includes all returned observations. Changes compare adjacent comparable observations only. No value is interpolated. Magnitude % is undefined after zero.', '',

@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="460" viewBox="0 0 960 460" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="490" viewBox="0 0 960 490" role="img">
 <title>SPY · gamma · fixed strikes</title><desc>Signed exposure; zero line; gaps are not interpolated. Time axis uses actual UTC spacing.</desc>
-<rect width="960" height="460" fill="#f7f5f0"/>
+<rect width="960" height="490" fill="#f7f5f0"/>
 <g font-family="sans-serif" fill="#17292e">
 <text x="45" y="35" font-size="22">SPY · gamma · fixed strikes</text>
 <text x="45" y="60" font-size="13">SYNTHETIC / FICTIONAL DATA</text>
@@ -27,4 +27,7 @@
 <text x="840" y="137" fill="#b34237" font-size="13">105</text>
 <text x="95.00" y="377" text-anchor="start" font-size="11">2026-09-30T14:00:00+00:00</text>
 <text x="825.00" y="377" text-anchor="end" font-size="11">2026-09-30T14:06:00+00:00</text>
-<text x="45" y="414" font-size="12">Signed source exposure · gaps break lines · no interpolated observations</text></g></svg>
+<text x="45" y="414" font-size="12">Signed source exposure · gaps break lines · no interpolated observations</text>
+<a href="https://skylit.ai/"><text x="45" y="439" font-size="13" text-decoration="underline">Demo by Skylit (fictional data) · skylit.ai</text></a>
+<text x="45" y="460" font-size="12">Research observations only; no trade advice. Attribution does not grant permission to publish data.</text>
+</g></svg>

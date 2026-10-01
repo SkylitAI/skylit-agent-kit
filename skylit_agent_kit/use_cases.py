@@ -131,7 +131,7 @@ def run(args):
         svg = chart(result, synthetic)
         body += f'\n![Signed exposure over actual time]({svg_destination.name})\n'
     else:
-        body = render_recipe(args.recipe, data, symbol, args.metric, start, end)
+        body = render_recipe(args.recipe, data, symbol, args.metric, start, end, synthetic=synthetic)
         body = ('**SYNTHETIC / FICTIONAL DATA**\n\n' if synthetic else '**User-supplied or live data — authenticity, freshness and comparability unverified.**\n\n') + body
     provenance = 'Bundled independent synthetic fixtures' if synthetic else ('User-supplied saved responses; authenticity/freshness unverified; no new requests' if args.input else 'Explicit live bounded request plan')
     body += f'\n\nProvenance: {provenance}.\n\n## Request plan\n\n{credits} documented credits / {len(plans)+1} requests including one free account preflight if executed live. This run used {"live requests" if args.live else "zero network requests and zero credits"}.\n\n'
