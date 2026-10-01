@@ -63,3 +63,9 @@ class TrackerTests(unittest.TestCase):
         from skylit_agent_kit.node_tracker import report
         p = payload(); p['data']['symbols'][0]['frames'] = []
         self.assertIn('No observations returned', report(self.run_track(p)))
+
+    def test_huge_integer_and_overflow_float_are_rejected_cleanly(self):
+        import json
+        for value in (10**400, json.loads('1e999')):
+            p = payload(); p['data']['symbols'][0]['frames'][0]['values'][0] = value
+            with self.assertRaises(ValueError): self.run_track(p)

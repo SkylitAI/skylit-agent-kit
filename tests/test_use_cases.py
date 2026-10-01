@@ -124,3 +124,13 @@ class UseCaseTests(unittest.TestCase):
         output=render_recipe('volatility-context',data,'SPY','gamma',START,END)
         self.assertIn('levels[0].priced_at',output);self.assertIn('horizons[0].em1_pct',output)
         self.assertIn('missing',output);self.assertIn('past-close anchor',output)
+
+    def test_independent_fixtures_match_public_response_contracts(self):
+        from skylit_agent_kit.catalog import get_endpoint, get_contract
+        from skylit_agent_kit.contract_schema import valid
+        for name in u.NAMES:
+            data=u.load_json(u.FIXTURES/(name+'.json'))
+            if name=='node-tracker': data={'heatseeker.getHistoricalRange':data}
+            for identity, payload in data.items():
+                entry=get_endpoint(identity)
+                self.assertTrue(valid(payload,entry['schema'],get_contract(entry['service'])),identity)

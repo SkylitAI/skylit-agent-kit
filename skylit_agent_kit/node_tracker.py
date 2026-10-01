@@ -1,4 +1,5 @@
 """Fixed-strike observations from public historical/range; ordinary arithmetic only."""
+from .use_case_errors import UseCaseError
 import math
 import json
 import re
@@ -9,8 +10,9 @@ from html import escape
 
 def parse_time(value):
     if not isinstance(value, str) or not re.fullmatch(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})', value):
-        raise ValueError('Timestamps must be RFC3339 with a timezone.')
-    return datetime.fromisoformat(value.replace('Z', '+00:00')).astimezone(timezone.utc)
+        raise UseCaseError('Timestamps must be RFC3339 with a timezone.')
+    try: return datetime.fromisoformat(value.replace('Z', '+00:00')).astimezone(timezone.utc)
+    except ValueError: raise UseCaseError('Invalid RFC3339 calendar date, clock or timezone.') from None
 
 
 def finite(value):
@@ -20,9 +22,11 @@ def finite(value):
 
 def expiries(values):
     if not isinstance(values, list) or not values or not all(isinstance(v, str) and re.fullmatch(r'\d{4}-\d{2}-\d{2}', v) for v in values):
-        raise ValueError('An explicit nonempty expiration date set is required.')
-    for value in values: date.fromisoformat(value)
-    if len(set(values)) != len(values): raise ValueError('Duplicate expirations are ambiguous.')
+        raise UseCaseError('An explicit nonempty expiration date set is required.')
+    try:
+        for value in values: date.fromisoformat(value)
+    except ValueError: raise UseCaseError('Invalid expiration calendar date.') from None
+    if len(set(values)) != len(values): raise UseCaseError('Duplicate expirations are ambiguous.')
     return tuple(sorted(values))
 
 
@@ -35,35 +39,35 @@ def track(payload, symbol, metric, strikes, expiration_set):
     """Reject malformed identity/time; represent duplicate times and coverage loss as gaps."""
     expected = expiries(expiration_set)
     if not isinstance(symbol, str) or not re.fullmatch(r'[A-Z0-9][A-Z0-9.:^/_-]{0,31}', symbol):
-        raise ValueError('Use one exact uppercase symbol, without markup or whitespace.')
+        raise UseCaseError('Use one exact uppercase symbol, without markup or whitespace.')
     if not strikes or len(strikes) > 8 or any(not finite(s) for s in strikes) or len(set(strikes)) != len(strikes):
-        raise ValueError('Choose 1–8 unique finite strike values.')
+        raise UseCaseError('Choose 1–8 unique finite strike values.')
     try:
         if metric not in ('gamma', 'vanna') or payload['meta']['metric'] != metric:
-            raise ValueError('Response metric does not match the requested metric.')
+            raise UseCaseError('Response metric does not match the requested metric.')
         data = payload['data']; start, end = parse_time(data['from']), parse_time(data['to'])
-        if end < start: raise ValueError('Response window is reversed.')
+        if end < start: raise UseCaseError('Response window is reversed.')
         symbols = data['symbols']
-        if not isinstance(symbols, list) or any(not isinstance(s, dict) for s in symbols): raise ValueError('Invalid symbol list.')
+        if not isinstance(symbols, list) or any(not isinstance(s, dict) for s in symbols): raise UseCaseError('Invalid symbol list.')
         selected = [s for s in symbols if s.get('symbol') == symbol]
-        if len(selected) != 1: raise ValueError('Expected exactly one matching symbol, without alias substitution.')
+        if len(selected) != 1: raise UseCaseError('Expected exactly one matching symbol, without alias substitution.')
         selected = selected[0]; axes = {}
         for axis in selected['axes']:
             aid, ss = axis['id'], axis['strikes']
-            if type(aid) is not int or aid in axes: raise ValueError('Duplicate or invalid axis ID.')
+            if type(aid) is not int or aid in axes: raise UseCaseError('Duplicate or invalid axis ID.')
             if not isinstance(ss, list) or any(not finite(s) for s in ss) or len(set(ss)) != len(ss):
-                raise ValueError('Invalid or duplicate axis strikes.')
+                raise UseCaseError('Invalid or duplicate axis strikes.')
             axes[aid] = (ss, expiries(axis['expirations']))
         frames = []
-        if len(selected['frames']) > 10000: raise ValueError('Too many frames for this bounded report.')
+        if len(selected['frames']) > 10000: raise UseCaseError('Too many frames for this bounded report.')
         for f in selected['frames']:
             stamp = parse_time(f['asOf'])
-            if not start <= stamp <= end: raise ValueError('Frame falls outside the response window.')
-            if type(f['axis']) is not int or f['axis'] not in axes: raise ValueError('Frame references an unknown axis.')
+            if not start <= stamp <= end: raise UseCaseError('Frame falls outside the response window.')
+            if type(f['axis']) is not int or f['axis'] not in axes: raise UseCaseError('Frame references an unknown axis.')
             ss, ex = axes[f['axis']]; vals = f['values']
             if not isinstance(vals, list) or len(vals) != len(ss) or any(not finite(v) for v in vals):
-                raise ValueError('Values must be finite and match the referenced axis length.')
-            if not finite(f['spot']): raise ValueError('Invalid spot value.')
+                raise UseCaseError('Values must be finite and match the referenced axis length.')
+            if not finite(f['spot']): raise UseCaseError('Invalid spot value.')
             frames.append((stamp, f, dict(zip(ss, vals)), ex))
         counts = Counter(f[0] for f in frames); series = {s: [] for s in strikes}; seen = set()
         for stamp, f, values, ex in sorted(frames, key=lambda f: f[0]):
@@ -81,13 +85,13 @@ def track(payload, symbol, metric, strikes, expiration_set):
                 magnitude_delta = abs(value) - abs(prev) if comparable else None
                 pct = 100 * magnitude_delta / abs(prev) if comparable and prev != 0 else None
                 if any(v is not None and not finite(v) for v in (delta, magnitude_delta, pct)):
-                    raise ValueError('Arithmetic overflow in change calculation.')
+                    raise UseCaseError('Arithmetic overflow in change calculation.')
                 points.append({'asOf': f['asOf'], 'timestamp': stamp.timestamp(), 'axis': f['axis'],
                     'expirations': list(ex), 'spot': f['spot'], 'value': value,
                     'magnitude': abs(value) if value is not None else None, 'delta': delta,
                     'magnitude_delta': magnitude_delta, 'magnitude_pct': pct, 'status': status})
     except (KeyError, TypeError, AttributeError):
-        raise ValueError('Invalid historical/range response shape.') from None
+        raise UseCaseError('Invalid historical/range response shape.') from None
     return {'symbol': symbol, 'metric': metric, 'expirations': list(expected), 'series': series,
             'source_meta': source_metadata(payload['meta']), 'from': data['from'], 'to': data['to'], 'frame_count': len(frames), 'unique_times': len(seen)}
 
