@@ -6,11 +6,11 @@
 
 | Step | What your agent does | What you get |
 |---|---|---|
-| 1. Open and check | Access this repository, read [AGENTS.md](../AGENTS.md), check Git and Python 3.11+ | Setup handled where possible; only genuinely missing access or prerequisites brought back to you |
+| 1. Open and check | Access this repository, read [AGENTS.md](../AGENTS.md), check Git and Python 3.11+ | Setup handled where possible; a clear next step if access or a prerequisite is missing |
 | 2. Show a result | Run the offline node tracker below; open its SVG and Markdown | A fictional chart with exact strikes, signs and visible gaps; zero service calls |
 | 3. Choose a question | Use the [capability map](capabilities.md) to pick one workflow | A relevant example or explanation of your saved report |
 | 4. Use your data when ready | Load saved JSON, or explain a live plan's inputs and caps | A bounded, authorized run with source timestamps and missing evidence visible |
-| 5. Keep what works | Turn one useful result into a reusable workflow with synthetic tests | An [Agent Lab experiment](https://github.com/SkylitAI/skylit-agent-lab), then a [reviewed contribution](../CONTRIBUTING.md) if you choose |
+| 5. Keep what works | Turn one useful result into a reusable workflow with synthetic tests | A local workflow you can submit to [Agent Lab](https://github.com/SkylitAI/skylit-agent-lab) or offer as a [Kit contribution](../CONTRIBUTING.md) |
 
 From the repository root:
 

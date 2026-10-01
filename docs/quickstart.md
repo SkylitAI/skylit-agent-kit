@@ -4,9 +4,11 @@
 
 ## First, see a chart
 
-After cloning the repository and opening its root directory:
+In a new terminal, clone the repository and run the demo. If you already have a checkout, open its root directory and run only the last command.
 
 ```sh
+git clone https://github.com/SkylitAI/skylit-agent-kit.git
+cd skylit-agent-kit
 python3 -m skylit_agent_kit use-case node-tracker
 ```
 
@@ -20,7 +22,7 @@ The bundled DEMO ticker, figures and timestamp are fictional. Nothing is fetched
 To save a local report:
 
 ```sh
-mkdir -p reports
+python3 -c "from pathlib import Path; Path('reports').mkdir(exist_ok=True)"
 python3 -m skylit_agent_kit sample > reports/demo.md
 ```
 
