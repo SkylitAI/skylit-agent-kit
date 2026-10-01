@@ -19,6 +19,8 @@ Default symbols: **SPXW, SPY, QQQ, TSLA, MSFT, AAPL, AMZN, META**. Duplicates ar
 
 ## What the report means
 
+For practical reading hints, saved-report prompts and a small extension ladder, use [Using watchlist data](using-watchlist-data.md). It distinguishes enforced limits from the freshness and evidence review you or your agent must perform.
+
 The overview selects the source-classified `king` node, or explicitly labels the largest returned magnitude if no king exists. Expanded tables show at most three largest returned nodes per metric and the latest three valid returned flow trades. Display values use six significant digits. These are source values and simple selections, not locally derived GEX/VEX, signals or scores.
 
 - Gamma and vanna boards request `maxStrikes=92` and `maxExpirations=5`: up to 92 strikes around spot and the nearest five expirations. They do not represent the whole chain. Actual returned expirations and board `asOf` are shown for each metric. The underlying `spot` can be newer than the board.

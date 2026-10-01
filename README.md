@@ -44,6 +44,7 @@ Suggested agent prompt:
 
 | I want to… | Start here |
 |---|---|
+| Understand the data and build more | [Reading hints, guardrails and extensions](docs/using-watchlist-data.md) |
 | Get GEX/VEX and recent flow | [Bounded watchlist guide](docs/live-watchlist.md) |
 | Run and customize the sample | [Quickstart](docs/quickstart.md) |
 | Connect Claude Desktop | [Claude guide](agents/claude/README.md) |
