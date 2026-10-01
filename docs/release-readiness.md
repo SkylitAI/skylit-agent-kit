@@ -10,7 +10,7 @@
 | Contract redistribution | Obtain explicit terms/permission for all three bundled snapshots and their generated derivatives listed in [THIRD_PARTY.md](../THIRD_PARTY.md), or replace/remove the material with an approved plan. Public URLs alone are not permission. |
 | Responsible reviewer | Obtain an exact GitHub user or `@SkylitAI/team` with write access. Then create `.github/CODEOWNERS` covering `*`, so source, workflows, licensing and security policy all require that owner. Verify GitHub accepts the file. No identity or team has been invented. |
 | Private reporting | Verify an actual confidential reporting route. GitHub's private-reporting endpoint returned 404 while the repo was internal; that does not confirm that it is enabled. During the approved publication process, enable/test private reporting and update [SECURITY.md](../SECURITY.md) before announcing release. |
-| Host security controls | Approve and apply the proposed repository settings below. Verify resulting settings and failing/successful PR behavior; workflow files alone do not enforce merging rules. |
+| Host security controls | Main protection below is applied; other proposed security settings still need approval and verification. Verify failing/successful PR behavior; workflow files alone do not enforce merging rules. |
 | Source and exposure review | Review all intended public history, branches, tags, logs, artifacts, issues/PRs and assets; privately resolve any finding. Human IP/provenance review is still required. No private vault comparison was performed. |
 | Exact revision checks | Run the complete offline matrix and security jobs against the final reviewed commit. A skipped CodeQL/dependency job is not evidence of analysis. Live evidence remains as stated in [compatibility.md](compatibility.md). |
 
@@ -18,7 +18,17 @@
 
 Inspected `main`: `a9439b9c2412300e08d409c8e8e1caf05fd4c2dc`. Repository visibility: **internal**. Main protection was false; repository/inherited ruleset listing was empty. Dependabot vulnerability alerts and security updates, Code Security, secret scanning, non-provider patterns, validity checks and push protection were disabled. Private reporting was unverified (404). Actions allowed all actions, did not require SHA pins, defaulted to read permissions, and could not approve pull requests. These settings were read only and may change independently of this branch.
 
-## Proposed administrator settings — approval required
+## Applied main protection — 2026-10-01
+
+The approved solo-maintainer policy is applied through classic branch protection
+and was read back from GitHub: PRs required; zero required approvals; an up-to-date
+branch; passing `test (3.11)` and `test (3.14)` checks bound to GitHub Actions app
+`15368`; resolved conversations; administrator enforcement; no force pushes,
+deletion or configured review bypass allowances. Code-owner and last-pusher
+approvals are not required. No visibility, access, tag or other security settings
+were changed. The ruleset proposals below remain separate, unapplied release gates.
+
+## Additional administrator proposals — approval required
 
 1. **Merge rules:** [main-ruleset.json](release/main-ruleset.json) targets `main`, requires a PR, one independent approval including code-owner review, dismissal of stale approvals, approval after the latest push, resolved review threads, an up-to-date branch and passing checks. It blocks force pushes and deletion and has no bypass actors. It also requires CodeQL results with no high/critical security alerts or error-level alerts. Confirm a real code owner and working analyses before activation.
 2. **Required checks:** `test (3.11)`, `test (3.14)`, `Secret scan`, `Dependency review`, `CodeQL Python`, bound to GitHub Actions app ID `15368`. The two test names/app ID were verified on the base revision; the three new job names are proposals until an authorized branch run confirms them. Enable dependency graph/review and CodeQL first; make sure their jobs execute successfully, rather than skip, before these rules become the release gate.
