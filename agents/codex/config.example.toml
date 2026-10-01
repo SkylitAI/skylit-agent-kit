@@ -1,0 +1,7 @@
+# Merge this section into your Codex config; do not overwrite existing settings.
+# Provide the key in the Codex process environment, never in this file.
+[mcp_servers.skylit]
+url = "https://mcp.skylit.ai/mcp"
+bearer_token_env_var = "SKYLIT_API_KEY"
+enabled_tools = ["account_usage"]
+tool_timeout_sec = 30
