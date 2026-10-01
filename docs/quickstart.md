@@ -27,7 +27,7 @@ Numbers must be nonnegative and finite; `null` means unavailable. The timestamp 
 
 ## 3. Connect when ready
 
-Use the [account example](../examples/README.md) to check access, or follow the [Claude](../agents/claude/README.md) or [Codex](../agents/codex/README.md) guide. Live research is a separate milestone; there is no `sample --live` switch.
+Use the [account example](../examples/README.md) to check access, or follow the [Claude](../agents/claude/README.md) or [Codex](../agents/codex/README.md) guide. For real GEX/VEX and recent flow, use the separate [watchlist command](live-watchlist.md): run `python3 -m skylit_agent_kit watchlist --dry-run`, then add `--live` when ready to use your account. There is no `sample --live` switch; the sample remains fictional. The watchlist is synthetic-tested; authenticated verification is pending.
 
 ## Troubleshooting
 
