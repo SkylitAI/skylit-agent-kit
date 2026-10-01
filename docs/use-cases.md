@@ -46,7 +46,7 @@ python3 -m skylit_agent_kit use-case node-tracker \
   --from 2026-09-30T14:00:00Z --to 2026-09-30T14:06:00Z
 ```
 
-Choose strikes actually relevant to your saved data; 100/105 are fictional demonstration prices. Saved files are size-limited to 8 MiB and checked before rendering. User-supplied files are labeled **source data**, not synthetic; the kit cannot certify their provenance. The window must match the saved response. No key is read.
+Choose strikes actually relevant to your saved data; 100/105 are fictional demonstration prices. Saved files are size-limited to 8 MiB and checked before rendering. User-supplied files are labeled **source data**, not synthetic; the kit cannot certify their provenance. The window must match the saved response. No key is read. Delay and attribution metadata are preserved when returned; missing attribution does not establish redistribution rights.
 
 For one live replay, replace the input argument with `--live` and explicitly allow its 25-credit cost:
 
@@ -100,7 +100,7 @@ python3 -m skylit_agent_kit use-case volatility-context --live --symbol SPY \
   --max-credits 2 --max-requests 3
 ```
 
-`heatseeker.getVolIv` plus `heatseeker.getVolCones` preserve source fields, `asOf`, session, stale/frozen status and missing coverage. The public IV description defines `svx1d`, `svx9`, `svx30`, `svx3m`, `svx6m` in annualized volatility points, plus `iv_rank` and `iv_pct`. The fictional fixture uses those names. Cone interior keys are not fixed by the public schema: the fixture's horizon object is illustrative and intentionally null; the report preserves actual nested source fields when available, without guessing units or reconstructing cones.
+`heatseeker.getVolIv` plus `heatseeker.getVolCones` preserve source fields, `asOf`, session, stale/frozen status and missing coverage. The public IV description defines `svx1d`, `svx9`, `svx30`, `svx3m`, `svx6m` in annualized volatility points, plus `iv_rank` and `iv_pct`. The fictional fixture uses those names. The current public description documents `horizons[]` values priced from current spot and `levels[]` values anchored at a past close. The fixture supplies fictional values for both, with null/missing optional skew and event fields. Reports preserve `anchor`, `priced_at`, `until`, `em1_pct` and the source bands rather than reconstructing them. The two collections answer different timing questions; do not treat a moving horizon as a fixed intraday budget.
 
 > Explain the returned IV tenor values and freshness flags. Preserve the field names and documented units. List missing cone horizons, and state whether source timing still needs review. Do not infer probabilities, prices, or trade actions from undocumented fields.
 
@@ -123,4 +123,4 @@ markdown = render_recipe('volatility-context', data, 'SPY', 'gamma', None, None)
 
 For recipe `--input`, save an object keyed by the exact endpoint IDs shown above, with each value the unmodified endpoint response. The node tracker takes the range response directly. Time-window saved recipes require `--symbol`, `--from`, `--to`; price-levels/node-tracker also require `--expirations`. They use local data only. Do not commit private inputs or reports.
 
-Technical sources: [Heatseeker public API contract](https://www.skylit.ai/docs/openapi.yaml), [Flowseeker public API contract](https://www.skylit.ai/docs/flowseeker-openapi.yaml), [Atlas public API contract](https://www.skylit.ai/docs/atlas-openapi.yaml). Maintained owners: Agent Kit maintainers; changes require synthetic regression tests and source-boundary review. See [compatibility evidence](compatibility.md) and [source boundary](source-boundary.md).
+Technical sources: [Heatseeker public API contract](https://api.skylit.ai/v1/openapi.json), [Flowseeker public API contract](https://www.skylit.ai/docs/flowseeker-openapi.yaml), [Atlas public API contract](https://www.skylit.ai/docs/atlas-openapi.yaml). Maintained owners: Agent Kit maintainers; changes require synthetic regression tests and source-boundary review. See [compatibility evidence](compatibility.md) and [source boundary](source-boundary.md).

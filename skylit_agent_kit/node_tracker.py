@@ -1,5 +1,6 @@
 """Fixed-strike observations from public historical/range; ordinary arithmetic only."""
 import math
+import json
 import re
 from collections import Counter
 from datetime import date, datetime, timezone
@@ -23,6 +24,11 @@ def expiries(values):
     for value in values: date.fromisoformat(value)
     if len(set(values)) != len(values): raise ValueError('Duplicate expirations are ambiguous.')
     return tuple(sorted(values))
+
+
+def source_metadata(meta):
+    selected = {k: meta[k] for k in ('mode', 'resolution', 'delayed', 'delayMinutes', 'attribution') if k in meta}
+    return escape(json.dumps(selected, ensure_ascii=True)).replace('|', '&#124;').replace('`', '&#96;')
 
 
 def track(payload, symbol, metric, strikes, expiration_set):
@@ -83,7 +89,7 @@ def track(payload, symbol, metric, strikes, expiration_set):
     except (KeyError, TypeError, AttributeError):
         raise ValueError('Invalid historical/range response shape.') from None
     return {'symbol': symbol, 'metric': metric, 'expirations': list(expected), 'series': series,
-            'from': data['from'], 'to': data['to'], 'frame_count': len(frames), 'unique_times': len(seen)}
+            'source_meta': source_metadata(payload['meta']), 'from': data['from'], 'to': data['to'], 'frame_count': len(frames), 'unique_times': len(seen)}
 
 
 def fmt(value):
@@ -134,6 +140,7 @@ def chart(result, synthetic=False):
 def report(result, synthetic=False):
     lines = ['# Fixed-strike node tracker', '', '**SYNTHETIC / FICTIONAL DATA**' if synthetic else '**Source data — freshness not certified**', '',
         f"Symbol: {result['symbol']} · metric: {result['metric']} · expirations: {', '.join(result['expirations'])}",
+        f"Source metadata: {result['source_meta']}", '',
         f"Requested response coverage: {result['from']} → {result['to']}; {result['frame_count']} frames / {result['unique_times']} unique times.", '',
         ('No observations returned. No changes can be established.' if not result['unique_times'] else 'Observed frames shown below.'), '',
         'Missing strikes, duplicate timestamps and changed expiry sets remain gaps. Tables show at most 200 timestamps per strike; the SVG includes all returned observations. Changes compare adjacent comparable observations only. No value is interpolated. Magnitude % is undefined after zero.', '',

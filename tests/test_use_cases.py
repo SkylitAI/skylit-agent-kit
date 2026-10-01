@@ -99,3 +99,28 @@ class UseCaseTests(unittest.TestCase):
     def test_source_text_cannot_insert_markdown_or_terminal_controls(self):
         from skylit_agent_kit.recipe_reports import cell
         self.assertEqual(cell('<script>|\x1b[31m'), '&lt;script&gt;&#124; [31m')
+
+    def test_all_live_recipes_share_actual_runner_preflight(self):
+        from skylit_agent_kit import endpoint_demo
+        account={'data':{'status':'active','apiEligible':True,'creditsBalance':100,'unlimited':False,'limits':{'requestsPerMinute':100,'symbolsPerHeatmapCall':10}}}
+        for name in u.NAMES:
+            data=u.load_json(u.FIXTURES/(name+'.json'))
+            payloads=[data] if name=='node-tracker' else list(data.values())
+            argv=[name,'--live','--symbol','SPY','--strikes','100,105','--expirations','2026-10-02','--from',START,'--to',END,'--max-credits','25']
+            with patch.object(endpoint_demo._Transport,'request',side_effect=[account,*payloads]) as request, patch.object(u,'credential',return_value='temporary-test-key'), patch.object(u,'output_path',side_effect=lambda x:Path(x)), patch.object(u,'save_private'), contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(u.run(self.args(*argv)),0)
+            self.assertEqual(request.call_count,len(payloads)+1)
+            self.assertEqual(request.call_args_list[0].args[0]['id'],'heatseeker.getAccount')
+
+    def test_delay_and_attribution_metadata_remain_visible(self):
+        from skylit_agent_kit.node_tracker import report
+        data=u.load_json(u.FIXTURES/'node-tracker.json')
+        data['meta'].update(delayed=True,delayMinutes=15,attribution={'text':'Data: Skylit'})
+        output=report(track(data,'SPY','gamma',[100],['2026-10-02']))
+        self.assertIn('delayMinutes',output); self.assertIn('Data: Skylit',output)
+
+    def test_cones_preserve_documented_anchor_and_horizon_fields(self):
+        data=u.load_json(u.FIXTURES/'volatility-context.json')
+        output=render_recipe('volatility-context',data,'SPY','gamma',START,END)
+        self.assertIn('levels[0].priced_at',output);self.assertIn('horizons[0].em1_pct',output)
+        self.assertIn('missing',output);self.assertIn('past-close anchor',output)

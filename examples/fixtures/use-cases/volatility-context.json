@@ -38,11 +38,46 @@
           "sessionDate": "2026-09-30",
           "stale": false,
           "cones": {
-            "close": null,
-            "1d": null,
-            "week": null,
-            "opex": null,
-            "30d": null
+            "horizons": [
+              {
+                "name": "1d",
+                "minutes": 390,
+                "em1_pct": 1.2,
+                "em1": 1.2,
+                "em2": 2.4,
+                "realized_em_pct": 1.0,
+                "up1_pct": null,
+                "dn1_pct": null,
+                "up2_pct": null,
+                "dn2_pct": null,
+                "tail_src": null,
+                "skew_expiry": null,
+                "events": null,
+                "event_adjusted": null
+              },
+              {
+                "name": "week",
+                "minutes": 1170,
+                "em1_pct": 2.1,
+                "em1": 2.1,
+                "em2": 4.2,
+                "realized_em_pct": 1.8
+              }
+            ],
+            "levels": [
+              {
+                "name": "day",
+                "label": "Day",
+                "anchor": 100,
+                "priced_at": "2026-09-29T20:00:00Z",
+                "until": "2026-09-30T20:00:00Z",
+                "em1_pct": 1.1,
+                "hi1": 101.1,
+                "lo1": 98.9,
+                "hi2": 102.2,
+                "lo2": 97.8
+              }
+            ]
           }
         }
       ],

@@ -1,7 +1,7 @@
 """Small evidence reports. Scores/levels remain source outputs, never reconstructed."""
 from datetime import datetime, timezone
 import re
-from .node_tracker import finite, fmt, parse_time
+from .node_tracker import finite, fmt, parse_time, source_metadata
 
 
 def cell(value):
@@ -44,6 +44,7 @@ def price_levels(payloads, symbol, metric, start, end):
         if not all(finite(level[k]) for k in ('strike', 'value', 'distancePct')): raise ValueError('Invalid level values.')
         rows.append((fmt(level['strike']), fmt(level['value']), level['nodeType'], fmt(level['distancePct'])))
     lines += [f"Levels asOf: {cell(board['asOf'])}; metric: {cell(lev['meta']['metric'])}; spot: {cell(board.get('spot', 'missing'))}. Showing {len(rows)} of {len(board['levels'])} returned levels.", '', table(['Strike', 'Signed exposure', 'Source classification', 'Distance % (source)'], rows), '',
+        f"Source metadata: {source_metadata(lev['meta'])}", '',
         'Coverage: returned levels only; an omitted strike is not zero. The levels endpoint does not return the actual expiry set: requested coverage is in the plan, actual expiry coverage is unverified. Historical bars and current levels are separate observations; this is not a simultaneous replay or an alignment verdict.', '',
         '[Charts First: Market Structure Before Exposure](https://www.skylit.ai/learn/charts-first) motivates beginning with dated prices and a question. [Reading Heatseeker Maps: King Nodes, Gatekeepers, Floors, and Ceilings](https://www.skylit.ai/learn/reading-heatseeker) supplies context for the source labels. No trade recommendation is produced.']
     return '\n'.join(lines)
@@ -103,7 +104,7 @@ def volatility_context(payloads, symbol, metric, start, end):
             rows = list(leaves(s[module]))
             if len(rows) > 500: raise ValueError('Volatility module has too many fields for this report.')
             lines += [table(['Source field', 'Source value'], rows), '']
-    lines += ['The public API leaves module interiors open-ended. Field names and units are preserved, not guessed; consult the public service documentation before numeric comparisons. IV fields svx1d/svx9/svx30/svx3m/svx6m use annualized volatility points, as documented publicly. The fictional cone fixture illustrates missing horizons; its object layout is illustrative because the public schema does not fix interior keys. Null is missing, never zero. No volatility metric or proprietary cone calculation is reconstructed. Technical source: [public API IV/cones descriptions](https://www.skylit.ai/docs/openapi.yaml).', '',
+    lines += ['The public schema leaves module interiors open-ended, and endpoint descriptions document the fields shown here. Field names and units are preserved, not guessed; consult the public service documentation before numeric comparisons. IV fields svx1d/svx9/svx30/svx3m/svx6m use annualized volatility points, as documented publicly. Cones horizons[] are priced from current spot; levels[] carry a past-close anchor. Preserve this distinction and the supplied priced_at/until timestamps. Null optional fields remain missing, never zero. No volatility metric or proprietary cone calculation is reconstructed. Technical source: [public API IV/cones descriptions](https://api.skylit.ai/v1/openapi.json).', '',
         'Coverage and timing must be reviewed before comparing these separate responses. Stale/frozen flags remain visible; they do not by themselves certify current comparability.']
     return '\n'.join(lines)
 
