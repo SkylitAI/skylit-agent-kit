@@ -9,6 +9,7 @@ import hashlib
 import json
 from pathlib import Path
 import sys
+from datetime import date
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -131,7 +132,10 @@ if __name__=='__main__':
             raw=Path(path).read_bytes()
             encoded=json.dumps(yaml.safe_load(raw),indent=2,sort_keys=True)+'\n'
             (CONTRACTS/f'{service}.json').write_text(encoded)
-            provenance[service]['source_yaml_sha256']=hashlib.sha256(raw).hexdigest()
-            provenance[service]['snapshot_sha256']=hashlib.sha256(encoded.encode()).hexdigest()
+            source_name={'heatseeker':'openapi','flowseeker':'flowseeker-openapi','atlas':'atlas-openapi'}[service]
+            provenance[service]={'source_url':f'https://www.skylit.ai/docs/{source_name}.yaml',
+                'checked':date.today().isoformat(),'source_yaml_sha256':hashlib.sha256(raw).hexdigest(),
+                'snapshot_sha256':hashlib.sha256(encoded.encode()).hexdigest()}
+            # A YAML import intentionally replaces, rather than misattributes, a prior live JSON snapshot.
         (CONTRACTS/'provenance.json').write_text(json.dumps(provenance,indent=2)+'\n')
     write_catalog(generate())

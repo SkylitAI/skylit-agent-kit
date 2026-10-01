@@ -338,7 +338,8 @@ def _read_stream(response,plan,deadline,key):
     return output('stream event cap reached')
 
 
-def _validate_live(plan):
+def validate_plan_for_live(plan):
+    """Validate canonical plan, price and live selectors without keys or network."""
     if not isinstance(plan,dict) or 'id' not in plan or 'params' not in plan: raise EndpointError('Use plan_request to build a reviewed request plan.')
     canonical=plan_request(plan['id'],plan['params'])
     if canonical!=plan: raise EndpointError('Request plan changed after validation; rebuild it with plan_request.')
@@ -364,7 +365,7 @@ def execute_plans(plans,api_key=None,max_credits=10,max_requests=3,max_seconds=3
     if type(max_requests) is not int or max_requests<1 or not number(max_credits) or max_credits<0 or not number(max_seconds) or not 0<max_seconds<=300:
         raise EndpointError('Use finite nonnegative credits, positive request count and 0–300 seconds.')
     if not isinstance(plans,list) or not plans: raise EndpointError('Provide a nonempty request-plan list.')
-    plans=[_validate_live(plan) for plan in plans]
+    plans=[validate_plan_for_live(plan) for plan in plans]
     if any(p['stream'] for p in plans) and len(plans)>1: raise EndpointError('Stream demos must run alone.')
     needs_auth=any(p['auth_required'] for p in plans)
     required_requests=len(plans)+(1 if needs_auth else 0)

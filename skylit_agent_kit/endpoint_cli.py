@@ -2,7 +2,7 @@
 import json
 import sys
 from . import catalog
-from .endpoint_demo import EndpointError, execute_plan, plan_request, preview
+from .endpoint_demo import EndpointError, execute_plan, plan_request, preview, validate_plan_for_live
 from .watchlist import number
 from .watchlist_cli import credential, output_path, save_private
 
@@ -50,7 +50,7 @@ def run(args):
     if not args.live:
         result=preview(args.identity,params)
     else:
-        plan=plan_request(args.identity,params)  # No fictional required defaults on this path.
+        plan=validate_plan_for_live(plan_request(args.identity,params))  # No fictional required defaults.
         if plan['live_blocked']: raise EndpointError(plan['live_blocked'])
         if plan['credits'] is None: raise EndpointError('No verified endpoint price; live disabled.')
         requests=2 if plan['auth_required'] else 1
