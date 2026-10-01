@@ -1,0 +1,13 @@
+# Endpoint demo implementation plan
+
+Scope: the 77 GET operations in the publicly published Heatseeker (24), Flowseeker (47) and Atlas (6) contracts. Existing working examples cover four route identities: account, symbols, heatmap and per-ticker flow. No private implementation, vault or credentials are inputs.
+
+1. Snapshot the three approved public contracts as JSON with URLs, retrieval date and hashes. Generate a per-operation inventory, resolved parameter/response schema metadata, independently generated synthetic request/response preview, purpose, next step and command. Preserve spec route identity separately from documented transport overrides.
+2. Implement stdlib catalog and request planning: required caller parameters, enum/type/bound/format/cross-field checks, fixed service hosts/routes, documented cost reservation, bounded stream metadata. Unknown dynamic pricing fails closed; Tempest history previews remain runnable but live is blocked for the published pricing discrepancy.
+3. Implement opt-in sequential transport: account preflight before authenticated data calls, whole-plan budget/rate/balance checks, no redirects/retries/reconnection/polling, secret-safe errors, bounded bytes and elapsed I/O checks. Streams have event/time/byte caps and stop on charging/closure protocol controls. Public spec operations do not require credentials.
+4. Wire `endpoints` and `endpoint <service.operationId>` CLI. Offline preview never reads secrets or calls the network. Live never fills required parameters from fictional samples. Preserve existing account/watchlist behavior. Coordinate shared planning/execution API with the separate use-case implementation.
+5. Audit generated coverage against the snapshotted source operation set; validate every synthetic response against its schema and every request serialization through mock HTTP. Test invalid inputs, price/range/stream limits, redirection, HTTP failures, bytes/timeouts, credentials, balance and rate exhaustion. Run full suite and compile/diff checks.
+
+Acceptance: all 77 operations have reproducible runnable offline previews, explicit current live eligibility, individually useful purpose/next-step text and provenance; supported live routes are bounded and mocked, never described as authenticated-tested. Metadata previews and endpoint examples are not claimed to be complete user workflows. No live service requests or remote pushes are part of implementation.
+
+Public inputs: https://www.skylit.ai/docs/openapi.yaml ; https://www.skylit.ai/docs/flowseeker-openapi.yaml ; https://www.skylit.ai/docs/atlas-openapi.yaml . Runtime and tests use only the Python standard library. A developer may use PyYAML solely to import new public YAML snapshots.
