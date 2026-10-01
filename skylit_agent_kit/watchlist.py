@@ -314,6 +314,10 @@ def render_report(result):
             '|---|---|---:|---|---:|---:|---:|---:|'])
         for trade in flow['trades'][:3]:
             lines.append('| ' + ' | '.join([trade['timestamp'], trade['optionType'], fmt(trade['strike']), trade['expiration'], fmt(trade['contracts']), fmt(trade['premium']), fmt(trade['flowScore']), fmt(trade['flowBonus'])]) + ' |')
+    lines.extend(['', '## How to use this', '',
+        'Check source times, trading session and expirations first; missing data is not zero.',
+        'No price chart or automatic freshness/alignment check is included. Separate observations from hypotheses.',
+        'Next steps: [reading hints and local extensions](https://github.com/SkylitAI/skylit-agent-kit/blob/main/docs/using-watchlist-data.md). Start with saved data; no new calls.'])
     lines.extend(['', '## Sources and usage', '', '[Public heatmap contract](https://www.skylit.ai/docs/openapi.yaml) · [Public flow contract](https://www.skylit.ai/docs/flowseeker-openapi.yaml)', ''])
     lines.extend(f'- [{url}]({url})' for url in result['sources'])
     lines.extend(['', f'{result["requests"]} requests attempted; {result["credits_reserved"]} documented credits reserved for attempts; no retries or model calls.',
