@@ -1,0 +1,123 @@
+{
+  "flowseeker.getFlow": {
+    "data": {
+      "ticker": "SPY",
+      "timeframe": "1d",
+      "trades": [
+        {
+          "timestamp": "2026-09-30T14:03:00Z",
+          "tradeId": "fictional-0",
+          "optionType": "PUT",
+          "strike": 100,
+          "expiration": "2026-10-02",
+          "dte": 2,
+          "contracts": 100,
+          "premium": 18000,
+          "price": 1.8,
+          "bid": 1.5,
+          "ask": 2.5,
+          "mid": 2,
+          "underlyingPrice": 101.4,
+          "isSweep": false,
+          "isMultiLeg": false,
+          "moneyness": "OTM",
+          "scores": {
+            "flowScore": -12,
+            "flowScoreInterpretation": "fictional_source_label",
+            "flowBonus": 10,
+            "flowBonusInterpretation": "fictional_source_label",
+            "baseDirection": -12,
+            "convictionMultiplier": 1
+          }
+        },
+        {
+          "timestamp": "2026-09-30T14:04:00Z",
+          "tradeId": "fictional-1",
+          "optionType": "CALL",
+          "strike": 105,
+          "expiration": "2026-10-02",
+          "dte": 2,
+          "contracts": 100,
+          "premium": 24000,
+          "price": 2.4,
+          "bid": 1.5,
+          "ask": 2.5,
+          "mid": 2,
+          "underlyingPrice": 101.4,
+          "isSweep": false,
+          "isMultiLeg": false,
+          "moneyness": "OTM",
+          "scores": {
+            "flowScore": 18,
+            "flowScoreInterpretation": "fictional_source_label",
+            "flowBonus": 10,
+            "flowBonusInterpretation": "fictional_source_label",
+            "baseDirection": 18,
+            "convictionMultiplier": 1
+          }
+        }
+      ],
+      "aggregate": {
+        "vwf": 2,
+        "sdf": 0,
+        "fir": 3
+      },
+      "tradeCount": 2,
+      "sweepCount": 0,
+      "totalPremium": 42000,
+      "queryTimeMs": 0
+    },
+    "meta": {
+      "timestamp": "2026-09-30T14:06:00Z",
+      "requestId": "fictional-fixture"
+    }
+  },
+  "flowseeker.getFlowStrikes": {
+    "data": {
+      "ticker": "SPY",
+      "startTime": "2026-09-30T14:00:00Z",
+      "endTime": "2026-09-30T14:06:00Z",
+      "byStrike": [
+        {
+          "strike": 100,
+          "right": "P",
+          "dominantExpiration": "2026-10-02",
+          "tradeCount": 1,
+          "volume": 100,
+          "totalPremium": 18000,
+          "bullishPremium": 12000,
+          "bearishPremium": 6000,
+          "netPremium": 6000,
+          "askPct": 0.6,
+          "bidPct": 0.3,
+          "openInterest": 500,
+          "volOiRatio": 0.2
+        },
+        {
+          "strike": 105,
+          "right": "C",
+          "dominantExpiration": "2026-10-02",
+          "tradeCount": 1,
+          "volume": 100,
+          "totalPremium": 24000,
+          "bullishPremium": 12000,
+          "bearishPremium": 6000,
+          "netPremium": 6000,
+          "askPct": 0.6,
+          "bidPct": 0.3,
+          "openInterest": 500,
+          "volOiRatio": 0.2
+        }
+      ],
+      "concentration": {
+        "top3StrikesShare": 0.7,
+        "top3StrikesNetPremium": 12000,
+        "interpretation": "fictional_source_label"
+      }
+    },
+    "meta": {
+      "timestamp": "2026-09-30T14:06:00Z",
+      "requestId": "fictional-fixture"
+    }
+  }
+}
