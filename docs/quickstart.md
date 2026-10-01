@@ -50,6 +50,9 @@ Use the [account example](../examples/README.md) to check access, or follow the 
 | `No module named skylit_agent_kit` | Run from the cloned repository root |
 | Python command missing | Install Python 3.11+; on Windows try `py -3` |
 | Invalid fixture | Compare your file with the bundled JSON; check timestamps, numeric values and `synthetic` |
+| Unknown endpoint ID | Run `python3 -m skylit_agent_kit endpoints`, then copy an exact ID |
+| Output file already exists | Choose a new `--output` filename; saved reports are never overwritten |
+| Output parent must be a directory | Use a folder beneath this repository's `reports/`; an existing file cannot be a parent folder |
 | Authentication/access error | Check the official Developer page; do not repeatedly retry |
 | No MCP tools | Check the host's connection state and permissions; record the host version in an issue |
 

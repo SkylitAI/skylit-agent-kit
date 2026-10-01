@@ -31,16 +31,21 @@ def output_path(name):
     # Reject a symlinked reports root and paths escaping it.
     if root.is_symlink(): raise WatchlistError('reports/ must not be a symlink.')
     path = Path(name).absolute()
-    if not path.resolve().is_relative_to(root.resolve()) or path.is_symlink():
+    resolved = path.resolve()
+    if not resolved.is_relative_to(root.resolve()) or path.is_symlink():
         raise WatchlistError('Save output inside this repository\'s ignored reports/ directory.')
     if path.exists(): raise WatchlistError('Output file already exists; choose a new name.')
-    return path
+    if any(parent.exists() and not parent.is_dir() for parent in path.parents):
+        raise WatchlistError('Output parent must be a directory; choose a path below reports/ without a file in its parent path.')
+    # Printed paths and relative report links use the same location, even when
+    # an accepted parent symlink points to a deeper folder inside reports/.
+    return resolved
 
 
 def save_private(path, content):
     path.parent.mkdir(parents=True, exist_ok=True)
     descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, 'O_NOFOLLOW', 0), 0o600)
-    with os.fdopen(descriptor, 'w') as stream: stream.write(content)
+    with os.fdopen(descriptor, 'w', encoding='utf-8') as stream: stream.write(content)
 
 
 def credential():

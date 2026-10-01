@@ -42,6 +42,41 @@ class WatchlistCliTests(unittest.TestCase):
             with self.assertRaises(FileExistsError): save_private(path, 'replacement')
             self.assertEqual(path.read_text(), 'sample')
 
+    def test_output_parent_file_stops_before_live_credentials(self):
+        reports = Path(__file__).resolve().parents[1] / 'reports'
+        reports.mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=reports) as directory:
+            blocked = Path(directory) / 'not-a-folder'
+            blocked.write_text('keep this file', encoding='utf-8')
+            commands = (['watchlist', '--live'],
+                        ['endpoint', 'heatseeker.getAccount', '--live'],
+                        ['use-case', 'volatility-context', '--live', '--symbol', 'SPY'])
+            for command in commands:
+                with self.subTest(command=command), \
+                     patch('sys.argv', ['kit', *command, '--output', str(blocked / 'report.md')]), \
+                     patch('skylit_agent_kit.watchlist_cli.credential', side_effect=AssertionError('No key')), \
+                     patch('skylit_agent_kit.endpoint_cli.credential', side_effect=AssertionError('No key')), \
+                     patch('skylit_agent_kit.use_cases.credential', side_effect=AssertionError('No key')), \
+                     contextlib.redirect_stderr(io.StringIO()) as error:
+                    self.assertEqual(main(), 1)
+                self.assertIn('parent', error.getvalue())
+                self.assertIn('directory', error.getvalue())
+            self.assertEqual(blocked.read_text(encoding='utf-8'), 'keep this file')
+
+    def test_private_reports_use_utf8_even_under_an_ascii_locale(self):
+        import subprocess
+        import sys
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'report.md'
+            env = dict(os.environ, LC_ALL='C', PYTHONUTF8='0', PYTHONCOERCECLOCALE='0')
+            code = ('from pathlib import Path; import sys; '
+                    'from skylit_agent_kit.watchlist_cli import save_private; '
+                    'save_private(Path(sys.argv[1]), "Skylit \\u2192 research")')
+            result = subprocess.run([sys.executable, '-c', code, str(path)],
+                                    env=env, capture_output=True)
+            self.assertEqual(result.returncode, 0, result.stderr.decode('ascii', errors='replace'))
+            self.assertEqual(path.read_bytes(), 'Skylit → research'.encode('utf-8'))
+
     def test_cancelled_hidden_prompt_exits_without_traceback(self):
         with patch('sys.argv', ['kit', 'watchlist', '--live']), \
              patch('skylit_agent_kit.watchlist_cli.credential', side_effect=KeyboardInterrupt), \
