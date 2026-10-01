@@ -10,7 +10,8 @@ from .sample import DEFAULT_FIXTURE, load_fixture, render_brief
 from .watchlist import WatchlistError
 from .watchlist_cli import add_parser, run as run_watchlist_cli
 from .endpoint_demo import EndpointError
-from . import endpoint_cli
+from . import endpoint_cli, use_cases
+from .use_case_errors import UseCaseError
 
 
 def main():
@@ -21,10 +22,13 @@ def main():
     commands.add_parser("account", help="Explicit live account lookup using SKYLIT_API_KEY (one GET, no retries)")
     add_parser(commands)
     endpoint_cli.add_parser(commands)
+    use_cases.add_parser(commands)
     args = parser.parse_args()
     try:
         if args.command in ('endpoints','endpoint'):
             return endpoint_cli.run(args)
+        if args.command == 'use-case':
+            return use_cases.run(args)
         if args.command == 'watchlist':
             return run_watchlist_cli(args)
         if args.command == "account":
@@ -35,7 +39,7 @@ def main():
     except KeyboardInterrupt:
         print("Cancelled. No further requests will be sent.", file=sys.stderr)
         return 130
-    except (AccountError, WatchlistError, EndpointError) as error:
+    except (AccountError, WatchlistError, EndpointError, UseCaseError) as error:
         print(str(error), file=sys.stderr)
         return 1
     except (OSError, ValueError, UnicodeError) as error:

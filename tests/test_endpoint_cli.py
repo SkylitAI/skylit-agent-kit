@@ -41,3 +41,15 @@ class EndpointCliTests(unittest.TestCase):
             self.assertEqual(main(),0)
         required=[p['name'] for p in json.loads(out.getvalue())['parameters'] if p.get('required')]
         self.assertEqual(required,['symbol','interval','bucket'])
+
+    def test_recipe_dispatch_preserves_actionable_budget_error_before_credentials(self):
+        args=['kit','use-case','node-tracker','--live','--symbol','SPY',
+              '--strikes','100,105','--expirations','2026-10-02',
+              '--from','2026-09-30T14:00:00Z','--to','2026-09-30T14:06:00Z']
+        with patch('sys.argv',args), \
+             patch('skylit_agent_kit.use_cases.credential',side_effect=AssertionError('No key')), \
+             patch.object(socket,'socket',side_effect=AssertionError('No network')), \
+             contextlib.redirect_stderr(io.StringIO()) as error:
+            self.assertEqual(main(),1)
+        self.assertIn('25 credits',error.getvalue())
+        self.assertNotIn('Cannot complete command',error.getvalue())
