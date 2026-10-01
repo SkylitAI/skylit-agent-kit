@@ -72,3 +72,30 @@ class UseCaseTests(unittest.TestCase):
             with self.assertRaises(ValueError):u.load_json(p)
             p.write_bytes(b' '* (8*1024*1024+1))
             with self.assertRaisesRegex(ValueError,'8 MiB'):u.load_json(p)
+
+    def test_live_recipe_executes_one_complete_batch_with_user_caps(self):
+        from skylit_agent_kit import endpoint_demo
+        data=u.load_json(u.FIXTURES/'volatility-context.json')
+        with patch.object(endpoint_demo,'execute_plans',create=True,return_value=list(data.values())) as execute, patch.object(u,'credential',return_value='temporary-test-key'), patch.object(u,'output_path',side_effect=lambda x:Path(x)), patch.object(u,'save_private'), contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(u.run(self.args('volatility-context','--live','--symbol','SPY','--max-credits','2','--max-requests','3')),0)
+        self.assertEqual(execute.call_count,1)
+        self.assertEqual(len(execute.call_args.args[0]),2)
+        self.assertEqual(execute.call_args.kwargs,{'max_credits':2,'max_requests':3,'max_seconds':30})
+
+    def test_live_node_uses_one_paid_plan_after_explicit_25_credit_budget(self):
+        from skylit_agent_kit import endpoint_demo
+        data=u.load_json(u.FIXTURES/'node-tracker.json')
+        with patch.object(endpoint_demo,'execute_plans',create=True,return_value=[data]) as execute, patch.object(u,'credential',return_value='temporary-test-key'), patch.object(u,'output_path',side_effect=lambda x:Path(x)), patch.object(u,'save_private'), contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(u.run(self.args('node-tracker','--live','--symbol','SPY','--strikes','100,105','--expirations','2026-10-02','--from',START,'--to',END,'--max-credits','25','--max-requests','2')),0)
+        self.assertEqual(len(execute.call_args.args[0]),1)
+        self.assertEqual(execute.call_args.kwargs['max_credits'],25)
+
+    def test_invalid_live_strikes_stop_before_credential_or_network(self):
+        with patch.object(u,'credential',side_effect=AssertionError('key read')):
+            for extra in ([], ['--strikes','NaN'], ['--strikes','100,100']):
+                with self.assertRaises(ValueError):
+                    u.run(self.args('node-tracker','--live','--symbol','SPY','--from',START,'--to',END,'--expirations','2026-10-02','--max-credits','25',*extra))
+
+    def test_source_text_cannot_insert_markdown_or_terminal_controls(self):
+        from skylit_agent_kit.recipe_reports import cell
+        self.assertEqual(cell('<script>|\x1b[31m'), '&lt;script&gt;&#124; [31m')

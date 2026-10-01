@@ -58,3 +58,8 @@ class TrackerTests(unittest.TestCase):
         r = self.run_track(p)
         self.assertIsNone(r['series'][105][1]['value'])
         self.assertIsNone(r['series'][105][2]['delta'])
+
+    def test_no_frames_explicitly_reports_no_observations(self):
+        from skylit_agent_kit.node_tracker import report
+        p = payload(); p['data']['symbols'][0]['frames'] = []
+        self.assertIn('No observations returned', report(self.run_track(p)))

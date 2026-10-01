@@ -1,10 +1,11 @@
 """Small evidence reports. Scores/levels remain source outputs, never reconstructed."""
 from datetime import datetime, timezone
+import re
 from .node_tracker import finite, fmt, parse_time
 
 
 def cell(value):
-    return str(value).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('|', '&#124;').replace('\n', ' ').replace('\r', ' ')[:500]
+    return re.sub(r'[\x00-\x1f\x7f]', ' ', str(value)).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('|', '&#124;').replace('\n', ' ').replace('\r', ' ')[:500]
 
 
 def table(headers, rows):
@@ -33,14 +34,16 @@ def price_levels(payloads, symbol, metric, start, end):
         if any(len(c) > 10000 for c in columns): raise ValueError('Too many bars for this bounded report.')
         rows = [(datetime.fromtimestamp(t, timezone.utc).isoformat(), fmt(o), fmt(hi), fmt(lo), fmt(c), fmt(v)) for t,o,hi,lo,c,v in list(zip(*columns))[:200]]
         lines += [f"Showing {len(rows)} of {len(h['t'])} returned bars. Atlas does not echo its symbol; for saved JSON, symbol identity depends on your explicit input provenance.", '', table(['Bar UTC', 'Open', 'High', 'Low', 'Close', 'Volume'], rows), '']
+        if h['c'] and not finite(h['c'][-1] - h['c'][0]): raise ValueError('Price change exceeds finite arithmetic range.')
         if h['c']: lines += [f"Returned close range: {fmt(min(h['c']))}–{fmt(max(h['c']))}. First-to-last close change: {fmt(h['c'][-1] - h['c'][0])}.", '']
         else: lines += ['No bars returned.', '']
     else: raise ValueError('Price source did not return bars or no_data.')
+    if not finite(board.get('spot')): raise ValueError('Invalid source spot.')
     rows = []
     for level in board['levels'][:200]:
         if not all(finite(level[k]) for k in ('strike', 'value', 'distancePct')): raise ValueError('Invalid level values.')
         rows.append((fmt(level['strike']), fmt(level['value']), level['nodeType'], fmt(level['distancePct'])))
-    lines += [f"Levels asOf: {cell(board['asOf'])}; metric: {cell(lev['meta']['metric'])}; spot: {cell(board.get('spot', 'missing'))}.", '', table(['Strike', 'Signed exposure', 'Source classification', 'Distance % (source)'], rows), '',
+    lines += [f"Levels asOf: {cell(board['asOf'])}; metric: {cell(lev['meta']['metric'])}; spot: {cell(board.get('spot', 'missing'))}. Showing {len(rows)} of {len(board['levels'])} returned levels.", '', table(['Strike', 'Signed exposure', 'Source classification', 'Distance % (source)'], rows), '',
         'Coverage: returned levels only; an omitted strike is not zero. The levels endpoint does not return the actual expiry set: requested coverage is in the plan, actual expiry coverage is unverified. Historical bars and current levels are separate observations; this is not a simultaneous replay or an alignment verdict.', '',
         '[Charts First: Market Structure Before Exposure](https://www.skylit.ai/learn/charts-first) motivates beginning with dated prices and a question. [Reading Heatseeker Maps: King Nodes, Gatekeepers, Floors, and Ceilings](https://www.skylit.ai/learn/reading-heatseeker) supplies context for the source labels. No trade recommendation is produced.']
     return '\n'.join(lines)
@@ -67,7 +70,7 @@ def flow_investigator(payloads, symbol, metric, start, end):
         f"Trade response generated: {cell(feed['meta']['timestamp'])}; showing {len(rows)} of {len(f['trades'])} returned trades. Source tradeCount: {cell(f.get('tradeCount', 'missing'))}.", '',
         table(['Trade UTC', 'Type', 'Strike', 'Expiration', 'Premium USD', 'Flow Score (source)'], rows), '',
         f"Rollup window: {cell(r['startTime'])} → {cell(r['endTime'])}; generated: {cell(rollup['meta']['timestamp'])}.", '',
-        table(['Strike', 'Right', 'Dominant expiry', 'Total premium USD', 'Net premium USD (source)'], strikes), '',
+        f"Showing {len(strikes)} of {len(r['byStrike'])} returned strike rollups.", '', table(['Strike', 'Right', 'Dominant expiry', 'Total premium USD', 'Net premium USD (source)'], strikes), '',
         'Coverage: trade list is a limited sample; strike rollup is top-N within its stated window. Empty lists mean no returned observations. Do not substitute the sample sum for the whole-window total. Flow Score is a service output, not a probability; call/put type and premium alone do not establish intent. Scores are displayed without recalculation.', '',
         'Missing evidence: opening/closing intent and a separately dated price chart. Cross-source agreement remains unverified.'])
 
