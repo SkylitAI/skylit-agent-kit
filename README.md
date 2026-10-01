@@ -107,3 +107,11 @@ python3 -m compileall -q skylit_agent_kit tests
 ```
 
 The runtime and tests use only Python's standard library. Run from the repository root; installation into site-packages is not required. See the [support matrix](docs/compatibility.md), [security guidance](SECURITY.md) and [roadmap](docs/roadmap.md).
+
+## License and release review
+
+Original kit code and documentation use the [MIT license](LICENSE). API access, API Data, upstream specifications, exchange/provider data and trademarks retain their own terms. Each user supplies their own key. See the [source and dependency inventory](THIRD_PARTY.md).
+
+Shared live-data reports include **Data: Skylit** with a link; preserve this credit and any source notices. Attribution does not grant redistribution rights. See the [API Terms](https://www.skylit.ai/api-terms) before sharing, especially for bulk, scheduled, real-time or commercial use.
+
+**Public release remains gated** on confirmed legal ownership and permission to redistribute the bundled contracts and their generated derivatives. [Release readiness](docs/release-readiness.md) also records pending reviewer, private reporting and GitHub security settings. Passing offline tests does not resolve these gates or certify live integrations.

@@ -13,6 +13,6 @@ Fixes, documentation and tested improvements belong in this kit. New experiments
 
 4. Include the behavior change, verification and limitations in a pull request. Declare the source of new domain calculations and fixtures under the [source boundary](docs/source-boundary.md). Use Skylit Academy for educational explanations and worked examples, citing the lesson title and link. Update compatibility evidence only for hosts you tested.
 
-Do not commit secrets, account responses, private strategies or data you cannot redistribute. New dependencies need a reason, a pinned version and license notes. Tools need bounded requests, explicit permissions/costs, provenance, missing-data behavior and a maintainer. CI runs on synthetic fixtures without live credentials.
+Do not commit secrets, account responses, private strategies or data you cannot redistribute. New dependencies need a reason, a pinned version and license notes in [THIRD_PARTY.md](THIRD_PARTY.md). For optional maintainer YAML imports, create a virtual environment and install `requirements-maintainer.txt`; normal development needs no packages. Tools need bounded requests, explicit permissions/costs, provenance, missing-data behavior and a maintainer. CI runs on synthetic fixtures without live credentials.
 
 Submitting a contribution means you have the right to contribute it under this repository's [MIT license](LICENSE). Third-party software and data retain their own terms; include attribution where required. Be respectful and make feedback specific to the work.
