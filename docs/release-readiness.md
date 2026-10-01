@@ -55,4 +55,4 @@ Scanners are heuristic. They do not clear proprietary methods, prove data rights
 
 The optional PyYAML 6.0.3 import was tested in a disposable copy using a hash-verified wheel: it preserved the Atlas contract and regenerated all 77 endpoints. An OSV query for that exact version returned no advisories on 2026-10-01; this is a point-in-time advisory check, not a guarantee.
 
-Current technical evidence is offline and synthetic. The exact test results and revision should accompany the review handoff; hosted security checks remain pending until this branch is authorized to be pushed and run.
+Current technical evidence is offline and synthetic. In [draft PR #7](https://github.com/SkylitAI/skylit-agent-kit/pull/7), both Python matrix jobs and the Gitleaks secret scan passed at `e22eb4612c0bb4c3d03c662a96a29418f02e4e81`. CodeQL and dependency review were explicitly skipped because their repository feature gates were not enabled; those skips are not analysis results. Check the PR's latest head and runs before review or merge.
