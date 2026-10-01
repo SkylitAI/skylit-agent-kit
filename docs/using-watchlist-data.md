@@ -25,7 +25,7 @@ Explain a saved report with **zero new API calls**. It contains observations and
 
 Educational paraphrases, not validated signals or win-rate claims; checked 2026-10-01:
 
-- [Charts First: Market Structure Before Exposure](https://www.skylit.ai/learn/charts-first): start with chart structure and a question, then check exposure for supporting or conflicting evidence. This kit does not supply the chart.
+- [Charts First: Market Structure Before Exposure](https://www.skylit.ai/learn/charts-first): start with chart structure and a question, then check exposure for supporting or conflicting evidence. The watchlist does not supply a chart; the separate [price-levels recipe](use-cases.md#2-put-dated-prices-beside-exposure-levels) supplies dated OHLCV context.
 - [Reading Heatseeker Maps: King Nodes, Gatekeepers, Floors, and Ceilings](https://www.skylit.ai/learn/reading-heatseeker): consider nodes relative to each other and spot. Use this context without inventing omitted nodes or promising price reactions.
 - [Trinity Mode: Cross-Index Alignment with SPX, SPY, and QQQ](https://www.skylit.ai/learn/trinity-mode): compare structures across instruments. The lesson describes a simultaneous view; this kit makes separate requests, requiring a timing check.
 
@@ -45,12 +45,12 @@ Elapsed checks are not a hard process deadline, and shared-account use can chang
 | Status | Useful next step | Keep it bounded |
 |---|---|---|
 | Available now | Choose `--symbols`, select a flow `--date`, save a local report, optionally `--save-raw` | Preview with dry-run; `--date` changes flow only, not the live heatmap |
-| Proposed extension | Plot saved source values locally | Start with synthetic inputs; label metric, timestamps, coverage and missing values; no new calls |
-| Proposed extension | Compare two saved snapshots | Match symbol, metric, session, strikes and expiry sets. Flag differing expiry sets; do not attribute net changes solely to positioning |
+| Available now | [Plot exact strikes over returned historical frames](use-cases.md#1-watch-fixed-strikes-over-time) | Synthetic or saved range input; preserve metric, strike identity, timestamps and expiry gaps |
+| Available now; broader comparison proposed | The [node tracker](use-cases.md#1-watch-fixed-strikes-over-time) compares adjacent frames in one saved range | Separate-file snapshot comparison remains proposed. Match identity and expiry sets; do not attribute changes solely to positioning |
 | Proposed extension | Keep a private research journal | Record observation, hypothesis, gaps and later evidence without retroactively rewriting the original view |
-| Proposed extension | Add dated chart, filing or other external context | Validate source, license, access and costs separately before connecting anything |
+| Available now; further context proposed | [Dated prices beside source levels](use-cases.md#2-put-dated-prices-beside-exposure-levels); filings remain proposed | Separate current levels from historical bars; validate source, license, access and costs |
 
-Start proposed extensions in [Skylit Agent Lab](https://github.com/SkylitAI/skylit-agent-lab) with synthetic data, existing caps and tests. Promote through review; these are not installed features.
+Start proposed extensions in [Skylit Agent Lab](https://github.com/SkylitAI/skylit-agent-lab) with synthetic data, existing caps and tests. Promote through review; the proposed items are not installed features.
 
 ## Prompts to try
 

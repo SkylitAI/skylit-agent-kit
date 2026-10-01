@@ -1,0 +1,109 @@
+{
+  "atlas.getHistory": {
+    "s": "ok",
+    "t": [
+      1790776800,
+      1790776860,
+      1790776920,
+      1790776980,
+      1790777040,
+      1790777100
+    ],
+    "o": [
+      100,
+      100.2,
+      100.1,
+      100.7,
+      100.5,
+      101.2
+    ],
+    "h": [
+      100.5,
+      100.6,
+      100.8,
+      100.9,
+      101.3,
+      101.6
+    ],
+    "l": [
+      99.9,
+      100,
+      100,
+      100.4,
+      100.4,
+      101
+    ],
+    "c": [
+      100.2,
+      100.1,
+      100.7,
+      100.5,
+      101.2,
+      101.4
+    ],
+    "v": [
+      1000,
+      1300,
+      1200,
+      1500,
+      900,
+      1600
+    ]
+  },
+  "heatseeker.getLevels": {
+    "data": {
+      "symbols": [
+        {
+          "symbol": "SPY",
+          "asOf": "2026-09-30T14:06:00Z",
+          "spot": 101.4,
+          "previousClose": 100,
+          "kingNode": {
+            "strike": 100,
+            "value": -50,
+            "nodeType": "king",
+            "distancePct": -1.38
+          },
+          "levels": [
+            {
+              "strike": 100,
+              "value": -50,
+              "nodeType": "king",
+              "distancePct": -1.38
+            },
+            {
+              "strike": 105,
+              "value": 30,
+              "nodeType": "pika",
+              "distancePct": 3.55
+            }
+          ],
+          "summary": {
+            "netExposure": -20,
+            "positiveWall": {
+              "strike": 105,
+              "value": 30,
+              "nodeType": "pika",
+              "distancePct": 3.55
+            },
+            "negativeWall": {
+              "strike": 100,
+              "value": -50,
+              "nodeType": "king",
+              "distancePct": -1.38
+            },
+            "flip": null,
+            "lowStrike": 100,
+            "highStrike": 105
+          }
+        }
+      ]
+    },
+    "meta": {
+      "metric": "gamma",
+      "resolution": "1m",
+      "mode": "live",
+      "cached": false
+    }
+  }
+}

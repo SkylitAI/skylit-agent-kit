@@ -2,7 +2,7 @@
 
 Build useful research workflows with Skylit's API and MCP, starting with a small example you can read, run and change.
 
-**Status: starter foundation.** The offline demo works today. Live account lookup and a bounded GEX/VEX + options-flow watchlist are implemented and tested with synthetic responses; authenticated end-to-end verification is still pending. SEC research, the full free toolkit, and host certification remain on the [roadmap](docs/roadmap.md).
+**Status: runnable examples, live certification pending.** Try four offline research workflows, a bounded GEX/VEX + flow watchlist, and previews for all 77 public API operations. Live paths are implemented and tested with synthetic responses; authenticated end-to-end verification is still pending. SEC research, the full free toolkit, and host certification remain on the [roadmap](docs/roadmap.md).
 
 ## Your first result
 
@@ -17,6 +17,27 @@ python3 -m skylit_agent_kit sample
 You get a short, clearly labeled **fictional** research brief with calculations, sources, gaps and zero usage costs. [See the expected output](examples/expected-brief.md).
 
 Change a number in `examples/fixtures/demo.json` and run again. Try setting a value to `null` to see how the report handles missing information.
+
+## See a strike change over time
+
+```sh
+python3 -m skylit_agent_kit use-case node-tracker
+```
+
+Open the printed Markdown and SVG paths in `reports/`. The **fictional, zero-cost** chart follows exact strikes through signed exposure changes and missing observations; it never follows a moving king label as if it were the same strike.
+
+![Fictional fixed-strike replay](examples/node-tracker.svg)
+
+[Four runnable workflows](docs/use-cases.md) cover fixed-strike replay, dated prices beside source levels, flow investigation and volatility context. They default to offline fixtures. Live replay costs 25 documented credits and requires an explicit budget increase; the other recipes reserve 2–4 credits. Each guide shows its exact plan and evidence limits.
+
+## Explore any public endpoint
+
+```sh
+python3 -m skylit_agent_kit endpoints
+python3 -m skylit_agent_kit endpoint heatseeker.getHeatmap
+```
+
+All **77 operations** have a synthetic request/response preview: 74 JSON, two bounded SSE streams and one plain-text clock. These demonstrate public contract shapes; the four workflows above turn selected responses into useful reports. [Endpoint guide](docs/endpoint-demos.md) · [Complete audit and ready commands](docs/endpoint-audit.md). Live mode is explicit; one conflicting Tempest history price remains blocked pending clarification.
 
 ## Real GEX/VEX and recent flow
 
@@ -44,6 +65,8 @@ Suggested agent prompt:
 
 | I want to… | Start here |
 |---|---|
+| Plot fixed strikes or try four research workflows | [Runnable use cases](docs/use-cases.md) |
+| Explore a particular public API operation | [All 77 endpoint demos](docs/endpoint-audit.md) |
 | Understand the data and build more | [Reading hints, guardrails and extensions](docs/using-watchlist-data.md) |
 | Get GEX/VEX and recent flow | [Bounded watchlist guide](docs/live-watchlist.md) |
 | Run and customize the sample | [Quickstart](docs/quickstart.md) |

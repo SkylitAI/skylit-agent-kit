@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="460" viewBox="0 0 960 460" role="img">
+<title>SPY · gamma · fixed strikes</title><desc>Signed exposure; zero line; gaps are not interpolated. Time axis uses actual UTC spacing.</desc>
+<rect width="960" height="460" fill="#f7f5f0"/>
+<g font-family="sans-serif" fill="#17292e">
+<text x="45" y="35" font-size="22">SPY · gamma · fixed strikes</text>
+<text x="45" y="60" font-size="13">SYNTHETIC / FICTIONAL DATA</text>
+<text x="45" y="82" font-size="12">Expirations: 2026-10-02</text>
+<line x1="95" x2="825" y1="168.75" y2="168.75" stroke="#697d83" stroke-dasharray="5 4"/>
+<text x="85" y="329.42" text-anchor="end" font-size="11">-120</text>
+<text x="85" y="172.75" text-anchor="end" font-size="11">0</text>
+<text x="85" y="133.58" text-anchor="end" font-size="11">30</text>
+<text x="840" y="95" font-size="12">Strike</text>
+<circle cx="95.00" cy="299.31" r="3" fill="#076b82"><title>2026-09-30T14:00:00Z / -100</title></circle>
+<circle cx="216.67" cy="325.42" r="3" fill="#076b82"><title>2026-09-30T14:01:00Z / -120</title></circle>
+<circle cx="338.33" cy="260.14" r="3" fill="#076b82"><title>2026-09-30T14:02:00Z / -70</title></circle>
+<polyline points="95.00,299.31 216.67,325.42 338.33,260.14" fill="none" stroke="#076b82" stroke-width="2"/>
+<circle cx="703.33" cy="234.03" r="3" fill="#076b82"><title>2026-09-30T14:05:00Z / -50</title></circle>
+<circle cx="825.00" cy="168.75" r="3" fill="#076b82"><title>2026-09-30T14:06:00Z / 0</title></circle>
+<polyline points="703.33,234.03 825.00,168.75" fill="none" stroke="#076b82" stroke-width="2"/>
+<text x="840" y="115" fill="#076b82" font-size="13">100</text>
+<circle cx="95.00" cy="142.64" r="3" fill="#b34237"><title>2026-09-30T14:00:00Z / 20</title></circle>
+<circle cx="216.67" cy="136.11" r="3" fill="#b34237"><title>2026-09-30T14:01:00Z / 25</title></circle>
+<polyline points="95.00,142.64 216.67,136.11" fill="none" stroke="#b34237" stroke-width="2"/>
+<circle cx="703.33" cy="129.58" r="3" fill="#b34237"><title>2026-09-30T14:05:00Z / 30</title></circle>
+<circle cx="825.00" cy="132.19" r="3" fill="#b34237"><title>2026-09-30T14:06:00Z / 28</title></circle>
+<polyline points="703.33,129.58 825.00,132.19" fill="none" stroke="#b34237" stroke-width="2"/>
+<text x="840" y="137" fill="#b34237" font-size="13">105</text>
+<text x="95.00" y="377" text-anchor="start" font-size="11">2026-09-30T14:00:00+00:00</text>
+<text x="825.00" y="377" text-anchor="end" font-size="11">2026-09-30T14:06:00+00:00</text>
+<text x="45" y="414" font-size="12">Signed source exposure · gaps break lines · no interpolated observations</text></g></svg>

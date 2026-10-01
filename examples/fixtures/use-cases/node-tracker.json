@@ -1,0 +1,111 @@
+{
+  "data": {
+    "from": "2026-09-30T14:00:00Z",
+    "to": "2026-09-30T14:06:00Z",
+    "symbols": [
+      {
+        "symbol": "SPY",
+        "axes": [
+          {
+            "id": 7,
+            "strikes": [
+              100,
+              105
+            ],
+            "expirations": [
+              "2026-10-02"
+            ]
+          },
+          {
+            "id": 22,
+            "strikes": [
+              95,
+              100
+            ],
+            "expirations": [
+              "2026-10-02"
+            ]
+          },
+          {
+            "id": 23,
+            "strikes": [
+              100,
+              105
+            ],
+            "expirations": [
+              "2026-10-09"
+            ]
+          }
+        ],
+        "frames": [
+          {
+            "asOf": "2026-09-30T14:00:00Z",
+            "axis": 7,
+            "spot": 101.0,
+            "previousClose": 100,
+            "values": [
+              -100,
+              20
+            ]
+          },
+          {
+            "asOf": "2026-09-30T14:01:00Z",
+            "axis": 7,
+            "spot": 101.1,
+            "previousClose": 100,
+            "values": [
+              -120,
+              25
+            ]
+          },
+          {
+            "asOf": "2026-09-30T14:02:00Z",
+            "axis": 22,
+            "spot": 101.2,
+            "previousClose": 100,
+            "values": [
+              30,
+              -70
+            ]
+          },
+          {
+            "asOf": "2026-09-30T14:04:00Z",
+            "axis": 23,
+            "spot": 101.4,
+            "previousClose": 100,
+            "values": [
+              -80,
+              40
+            ]
+          },
+          {
+            "asOf": "2026-09-30T14:05:00Z",
+            "axis": 7,
+            "spot": 101.5,
+            "previousClose": 100,
+            "values": [
+              -50,
+              30
+            ]
+          },
+          {
+            "asOf": "2026-09-30T14:06:00Z",
+            "axis": 7,
+            "spot": 101.6,
+            "previousClose": 100,
+            "values": [
+              0,
+              28
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "meta": {
+    "metric": "gamma",
+    "resolution": "1m",
+    "mode": "historical",
+    "cached": false
+  }
+}

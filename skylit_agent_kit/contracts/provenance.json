@@ -1,0 +1,23 @@
+{
+  "heatseeker": {
+    "source_url": "https://api.skylit.ai/v1/openapi.json",
+    "checked": "2026-10-01",
+    "source_json_sha256": "b313e8caf8499128b18b76792a829a125c2a6c994c88b264dad2ed728b2ef968",
+    "snapshot_sha256": "2bd188f63d958fb3108479f356a1341fa787719055f6a42bea8dae3317404130",
+    "secondary_source_url": "https://www.skylit.ai/docs/openapi.yaml",
+    "secondary_yaml_sha256": "b83333a73669ff2c13c4a8781afe60d75b13782b53f6fdb7588adfb6f17b55c1",
+    "drift_note": "Unauthenticated public service contract returned HTTP200; same24 operation identities but newer dailyStats ET-session/extended parameter, Tempest descriptions and Meta freshness fields than website YAML. Service contract preferred; history pricing conflict remains."
+  },
+  "flowseeker": {
+    "source_url": "https://www.skylit.ai/docs/flowseeker-openapi.yaml",
+    "checked": "2026-10-01",
+    "source_yaml_sha256": "554cfc954667478f584ce08b0edd2a629a7e2d6c91757abbb9581e16d9ad6ad2",
+    "snapshot_sha256": "a44ca863f02470c90d2d1dbf60cfceaf8140f1e253e15fc49c0c9ffbd22b2749"
+  },
+  "atlas": {
+    "source_url": "https://www.skylit.ai/docs/atlas-openapi.yaml",
+    "checked": "2026-10-01",
+    "source_yaml_sha256": "d9c8837a3a27ad65a5a917a1e4b974b0829c292e2e4ef99657141ad08137e341",
+    "snapshot_sha256": "7e7f2835f2d2fd0de10ba1c94aba01825383d681cb6f3cd48f1fa9e5b7a622f2"
+  }
+}
