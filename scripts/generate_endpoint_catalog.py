@@ -35,6 +35,7 @@ def example_params(parameters, operation):
         if name in ('symbol','symbols') and operation['service'] == 'flowseeker':
             value = 'SPY__261002C00100000'
         result[name] = value
+    if operation['operation_id'] == 'getDailyStats': result['to']='2026-09-30'
     if operation['operation_id'] == 'streamHeatmap': result.update(symbols='SPY', format='v2')
     return result
 
@@ -82,15 +83,21 @@ def generate():
                     'description':operation.get('description',''), 'parameters':parameters,
                     'schema':response_type.get('schema',{}), 'content_type':content_type,
                     'credits':operation.get('x-credits'), 'pricing_extensions':{k:v for k,v in operation.items() if k.startswith('x-credits')},
-                    'auth_required':bool(operation.get('security', document.get('security',[]))),
+                    'spec_auth_required':bool(operation.get('security', document.get('security',[]))),
+                    'auth_required':True if identity=='flowseeker.getOpenAPI' else bool(operation.get('security', document.get('security',[]))),
+                    'transport_override_note':'Flow introduction documents /v1/flow/openapi.json on the unified host; unauthenticated GET returned HTTP401 on 2026-10-01 despite operation security:[]. Preserve schema identity; require authenticated transport until reconciled.' if identity=='flowseeker.getOpenAPI' else None,
                     'stream':content_type=='text/event-stream', 'provenance':provenance[service],
                     'existing_demo':identity in ('heatseeker.getAccount','heatseeker.listSymbols','heatseeker.getHeatmap','flowseeker.getFlow'),
                     'live_blocked':'Published Tempest history pricing conflicts: extension says base 3 + 0.1/symbol-day; prose says ceil(symbol-weekdays/10), minimum 1. Live disabled pending clarification.' if identity=='heatseeker.getVolHistory' else None}
                 entry['example_params']=example_params(parameters,entry)
                 entry['example_response']=synthetic(entry['schema'],document)
                 if entry['stream']:
-                    entry['example_response']='event: connected\ndata: {"creditsRemaining":100,"creditsPerMinute":1}\n\nevent: closed\ndata: {"reason":"synthetic_demo"}\n\n'
+                    data_schema={'$ref':'#/components/schemas/StreamSnapshot'} if entry['operation_id']=='streamHeatmap' else {'type':'object','properties':{'symbol':{'type':'string'},'asOf':{'type':'string','format':'date-time'}}}
+                    data=synthetic(data_schema,document)
+                    event='snapshot' if entry['operation_id']=='streamHeatmap' else 'vol'
+                    entry['example_response']='event: connected\ndata: {"creditsRemaining":100,"creditsPerMinute":1}\n\nevent: '+event+'\ndata: '+json.dumps(data)+'\n\nevent: closed\ndata: {"reason":"synthetic_demo"}\n\n'
                 if not valid(entry['example_response'],entry['schema'],document): raise ValueError('Invalid synthetic response '+identity)
+                entry['schema_note']='Structural example only; public Tempest schemas leave module interiors underspecified.' if '/v1/vol/' in path else 'Fictional schema-shaped fields; not necessarily a coherent financial scenario.'
                 entry['next_step']=next_step(entry)
                 entry['preview_command']='python3 -m skylit_agent_kit endpoint '+identity
                 entries.append(entry)
@@ -107,7 +114,7 @@ def write_catalog(entries):
         price=str(e['credits'])+(' + stream charges' if e['stream'] else '')
         if e['live_blocked']: price+=' (live blocked)'
         lines.append(f'| `{e["id"]}` | `{e["method"]} {e["path"]}` | {price} | {"yes" if e["existing_demo"] else "no"} | `{e["preview_command"]}` — {e["next_step"].replace("|", "/")} |')
-    lines.extend(['', 'Each catalog entry also preserves host, purpose, resolved parameter definitions, response schema, source URL/date/hash, exact synthetic preview and live eligibility. Flowseeker getOpenAPI retains spec `/v1/openapi.json` identity but uses the introduction-documented unified-host `/v1/flow/openapi.json` transport route. Range-based prices are computed or conservatively limited by the runner, not inferred from this base-price column.', ''])
+    lines.extend(['', 'Each catalog entry also preserves host, purpose, resolved parameter definitions, response schema, source URL/date/hash, exact synthetic preview and live eligibility. Flowseeker getOpenAPI retains spec `/v1/openapi.json` identity but uses the introduction-documented unified-host `/v1/flow/openapi.json` transport route. Its schema declares security:[], but an unauthenticated GET returned HTTP401 on 2026-10-01: the transport explicitly requires a key and account preflight. Range-based prices are computed or conservatively limited by the runner, not inferred from this base-price column.', ''])
     (ROOT/'docs/endpoint-audit.md').write_text('\n'.join(lines))
 
 

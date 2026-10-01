@@ -214,13 +214,59 @@
       }
     },
     "schemas": {
+      "Attribution": {
+        "description": "Whether and how this response's data may be published. See\n`/legal/api#sharing`. An Agent or MCP client should never publish\ndata where `shareable` is false, regardless of `shareClass`.\n`required`, `license`, `shareable` and `shareClass` are always sent\non `/v1/options/*` and absent from the short form.\n",
+        "properties": {
+          "license": {
+            "enum": [
+              "personal",
+              "commercial",
+              "connected_app"
+            ],
+            "type": "string"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "shareClass": {
+            "description": "\"raw\" (e.g. option quotes, greeks) must never be auto-published.",
+            "enum": [
+              "derived",
+              "derived_levels_only",
+              "raw"
+            ],
+            "type": "string"
+          },
+          "shareable": {
+            "type": "boolean"
+          },
+          "terms": {
+            "format": "uri",
+            "type": "string"
+          },
+          "text": {
+            "example": "Powered by Skylit",
+            "type": "string"
+          },
+          "url": {
+            "format": "uri",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text",
+          "url"
+        ],
+        "type": "object"
+      },
       "DailyStat": {
         "properties": {
           "complete": {
-            "description": "False for a day still in progress (today).",
+            "description": "False for a session still in progress (today) or ended less than 30 minutes ago.",
             "type": "boolean"
           },
           "date": {
+            "description": "The trading session's date (ET).",
             "format": "date",
             "type": "string"
           },
@@ -229,7 +275,7 @@
             "type": "string"
           },
           "frames": {
-            "description": "1-minute frames the day's values are computed from.",
+            "description": "1-minute frames inside the session the values are computed from.",
             "type": "integer"
           },
           "lastAt": {
@@ -423,8 +469,24 @@
       },
       "Meta": {
         "properties": {
+          "attribution": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Attribution"
+              }
+            ],
+            "description": "How to credit this data. Most routes send the short form\n`{text, url, terms}` (\"Data: Skylit\"). Routes whose data class the\nlicensing design (TERMS.md \u00a75) tags explicitly \u2014 today,\n`/v1/options/*` \u2014 send the full licensing shape instead. Can be\nabsent; do not infer sharing rules from the short form or from\nits absence.\n"
+          },
           "cached": {
             "description": "True if served from the in-process cache.",
+            "type": "boolean"
+          },
+          "delayMinutes": {
+            "description": "The delay applied when `delayed` is true.",
+            "type": "integer"
+          },
+          "delayed": {
+            "description": "True when your plan's data is delayed and this latest-data request\nwas served as of `delayMinutes` ago (mode is then `historical`).\nAbsent on real-time plans.\n",
             "type": "boolean"
           },
           "metric": {
@@ -940,6 +1002,9 @@
             "format": "date-time",
             "type": "string"
           },
+          "attribution": {
+            "$ref": "#/components/schemas/Attribution"
+          },
           "cached": {
             "type": "boolean"
           },
@@ -1130,7 +1195,7 @@
     }
   },
   "info": {
-    "description": "Skylit exposes its real-time options-Greeks (gamma / vanna) heatmaps as a\nversioned public HTTP API, per strike, with the live velocity metric and\nSkylit's node classification (King / Gatekeeper / etc.).\n\n**Authentication.** Send your Skylit API key as a bearer token:\n\n    Authorization: Bearer <key>\n\nA request without an `Authorization` header gets `401`; an invalid,\nrevoked or expired key gets `403`.\n\nThe gateway also accepts the bare key in the same header\n(`Authorization: <key>`); `Bearer` is the documented form. The key is not\nread from `X-API-Key` or the query string: those requests get `401`.\n\n**Credit metering.** Every chargeable request debits a fixed cost from\nyour credit balance:\n\n| Endpoint        | Cost |\n|-----------------|-----:|\n| `/v1/heatmap`    | 1   |\n| `/v1/gex/levels` | 1   |\n| `/v1/historical` | 5   |\n| `/v1/historical/range` | 25 |\n| `/v1/stats/daily` | 5  |\n| `/v1/stream`     | 1 per symbol to open + 1 per symbol per minute open |\n| `/v1/account`, `/v1/symbols`, `/v1/openapi.json` | 0 |\n\n`/v1/openapi.json` (this document) needs no key.\n\n**Failed calls are free:** a request answered with any 4xx or 5xx status is\nrefunded, and its `X-Credits-Remaining` already reflects the refund.\n\nNew API accounts start with 5,000 credits; Pro, Prot\u00e9g\u00e9 and Quant also get\n25,000 included credits each month (`GET /v1/account` shows the balance).\nEvery chargeable response\ncarries `X-Credits-Remaining: <balance>`. Out of credits \u2192 `402`\n`insufficient_credits`; an admin-suspended account \u2192 `403`\n`account_suspended`. Top up via your account console.\n\n**Rate limits.** Each key has a requests-per-minute limit set by the\naccount's plan (Pro, Prot\u00e9g\u00e9 and Quant: 120 per key; invite: 60 per key),\ncounted across every Skylit API host. `GET /v1/account` returns it as\n`limits.requestsPerMinute`; read it instead of hard-coding a number. Over\nit the gateway answers `429` `rate_limited`. Responses carry\n`X-RateLimit-Limit` (the key's limit), `X-RateLimit-Remaining` (requests\nleft in the current window) and `X-RateLimit-Reset` (Unix time, in\nseconds, when the window resets). The gateway's `429` has no `Retry-After`: wait until\n`X-RateLimit-Reset`. `429`s from the API itself (concurrency and stream\nlimits) carry `Retry-After`.\n\n**Symbols.** Multi-symbol routes take at most 10 distinct symbols per\nrequest; more is a `400` `invalid_parameter` (never silently truncated).\nUnknown symbols in a list are omitted from `data.symbols`; if none of the\nrequested symbols is available the response is `404` `symbol_not_found`.\n\nLive streams (`/v1/stream`) cost 1 credit per symbol to open plus 1 per\nsymbol per minute connected, and close after one hour.\n\n**Resolution.** The heatmap is a 1-second time series. `/v1/heatmap` and\n`/v1/historical` return the single snapshot at or before the requested\ninstant (`/v1/historical` to the second); `/v1/historical/range` returns\nevery snapshot in a window of up to 15 minutes. History goes back to\n2023-03-28; `meta.resolution` reports the resolution actually served:\n`\"1s\"`, or `\"1m\"` for the older history that is only stored once a minute.\n\n**Board size.** By default `/v1/heatmap` returns 92 strikes around spot\nand the nearest 5 expirations, and leaves out interior strikes whose cells\nare all negligible. `maxStrikes=all&maxExpirations=all&includeEmpty=true`\nreturns the full board exactly as stored. Limits above a cap are a `400`,\nnever a silent reduction.\n\n**Compression.** Send `Accept-Encoding: gzip` and JSON responses come back\ngzip-compressed (typically 3-5x smaller). Streams are never compressed.\n\n**Velocity is live-only.** The `velocityPct` field is present on\n`/v1/heatmap` (live) and absent on `/v1/historical` (replay).\n\n**Response shape.** Success \u2192 `{ \"data\": ..., \"meta\": { ... } }`; errors \u2192\n`{ \"error\": { \"code\": \"...\", \"message\": \"...\" } }`, including the ones\nthe gateway sends itself (`401`, `403`, `429`, `504`). Unknown paths are\n`404` `not_found`. camelCase throughout.\n`data.symbols` is always an array (one element per requested symbol), so a\nsingle-symbol call and a multi-symbol \"Trinity\" call share one shape.\n",
+    "description": "Skylit exposes its real-time options-Greeks (gamma / vanna) heatmaps as a\nversioned public HTTP API, per strike, with the live velocity metric and\nSkylit's node classification (King / Gatekeeper / etc.).\n\n**Authentication.** Send your Skylit API key as a bearer token:\n\n    Authorization: Bearer <key>\n\nA request without an `Authorization` header gets `401`; an invalid,\nrevoked or expired key gets `403`.\n\nThe gateway also accepts the bare key in the same header\n(`Authorization: <key>`); `Bearer` is the documented form. The key is not\nread from `X-API-Key` or the query string: those requests get `401`.\n\n**Credit metering.** Every chargeable request debits a fixed cost from\nyour credit balance:\n\n| Endpoint        | Cost |\n|-----------------|-----:|\n| `/v1/heatmap`    | 1   |\n| `/v1/gex/levels` | 1   |\n| `/v1/historical` | 5   |\n| `/v1/historical/range` | 25 |\n| `/v1/stats/daily` | 5  |\n| `/v1/stream`     | 1 per symbol to open + 1 per symbol per minute open |\n| `/v1/account`, `/v1/symbols`, `/v1/openapi.json` | 0 |\n\n`/v1/openapi.json` (this document) needs no key.\n\n**Failed calls are free:** a request answered with any 4xx or 5xx status is\nrefunded, and its `X-Credits-Remaining` already reflects the refund.\n\nNew API accounts start with 5,000 credits; Pro, Prot\u00e9g\u00e9 and Quant also get\n25,000 included credits each month (`GET /v1/account` shows the balance).\nEvery chargeable response\ncarries `X-Credits-Remaining: <balance>`. Out of credits \u2192 `402`\n`insufficient_credits`; an admin-suspended account \u2192 `403`\n`account_suspended`. Top up via your account console.\n\n**Rate limits.** Each key has a requests-per-minute limit set by the\naccount's plan (Pro, Prot\u00e9g\u00e9 and Quant: 120 per key; invite: 60 per key),\ncounted across every Skylit API host. `GET /v1/account` returns it as\n`limits.requestsPerMinute`; read it instead of hard-coding a number. Over\nit the gateway answers `429` `rate_limited`. Responses carry\n`X-RateLimit-Limit` (the key's limit), `X-RateLimit-Remaining` (requests\nleft in the current window) and `X-RateLimit-Reset` (Unix time, in\nseconds, when the window resets). The gateway's `429` has no `Retry-After`: wait until\n`X-RateLimit-Reset`. `429`s from the API itself (concurrency and stream\nlimits) carry `Retry-After`.\n\n**Attribution.** Every response carries\n`X-Skylit-Attribution: Data: Skylit (https://skylit.ai/?utm_source=api&utm_medium=attribution)`, JSON success\nresponses carry `meta.attribution`, and `/v1/stream`'s `connected` event\ncarries the same object. When you share or publish Skylit data, credit\n\"Data: Skylit\" (https://www.skylit.ai/api-terms#attribution).\n\n**Symbols.** Multi-symbol routes take at most 10 distinct symbols per\nrequest; more is a `400` `invalid_parameter` (never silently truncated).\nUnknown symbols in a list are omitted from `data.symbols`; if none of the\nrequested symbols is available the response is `404` `symbol_not_found`.\n\nLive streams (`/v1/stream`) cost 1 credit per symbol to open plus 1 per\nsymbol per minute connected, and close after one hour.\n\n**Resolution.** The heatmap is a 1-second time series. `/v1/heatmap` and\n`/v1/historical` return the single snapshot at or before the requested\ninstant (`/v1/historical` to the second); `/v1/historical/range` returns\nevery snapshot in a window of up to 15 minutes. History goes back to\n2023-03-28; `meta.resolution` reports the resolution actually served:\n`\"1s\"`, or `\"1m\"` for the older history that is only stored once a minute.\n\n**Board size.** By default `/v1/heatmap` returns 92 strikes around spot\nand the nearest 5 expirations, and leaves out interior strikes whose cells\nare all negligible. `maxStrikes=all&maxExpirations=all&includeEmpty=true`\nreturns the full board exactly as stored. Limits above a cap are a `400`,\nnever a silent reduction.\n\n**Compression.** Send `Accept-Encoding: gzip` and JSON responses come back\ngzip-compressed (typically 3-5x smaller). Streams are never compressed.\n\n**Velocity is live-only.** The `velocityPct` field is present on\n`/v1/heatmap` (live) and absent on `/v1/historical` (replay).\n\n**Response shape.** Success \u2192 `{ \"data\": ..., \"meta\": { ... } }`; errors \u2192\n`{ \"error\": { \"code\": \"...\", \"message\": \"...\" } }`, including the ones\nthe gateway sends itself (`401`, `403`, `429`, `504`). Unknown paths are\n`404` `not_found`. camelCase throughout.\n`data.symbols` is always an array (one element per requested symbol), so a\nsingle-symbol call and a multi-symbol \"Trinity\" call share one shape.\n",
     "summary": "Options-Greeks heatmaps as a public HTTP API.",
     "title": "Skylit Public API",
     "version": "1.1.0"
@@ -1224,7 +1289,7 @@
     },
     "/v1/gex/levels": {
       "get": {
-        "description": "The strikes Skylit classifies as nodes (king, gatekeeper, pika, barney,\nsignificant) for up to 10 symbols, strongest first, with each level's\ndistance from spot. Same live source, filters and 5-second cache as\n`/v1/heatmap`; 1 credit per request.\n\nEach symbol also carries `summary`: total net exposure, the strongest\npositive and negative strikes (the walls), and the flip level where\ncumulative net exposure changes sign. It is computed from the strikes\nthis request returned, so widen `maxStrikes` for a wider view.\n",
+        "description": "The strikes Skylit classifies as nodes (king, gatekeeper, pika, barney,\nsignificant) for up to 10 symbols, strongest first, with each level's\ndistance from spot. Same live source, filters and 5-second cache as\n`/v1/heatmap`; 1 credit per request.\n\nEach symbol also carries `summary`: total net exposure, the strongest\npositive and negative strikes (the walls), and the flip level where\ncumulative net exposure changes sign. It is computed from the strikes\nthis request returned, so widen `maxStrikes` for a wider view.\n\nA call that cannot finish within 20 seconds answers `504`\n`gateway_timeout` (refunded); retry, or request fewer symbols.\n",
         "operationId": "getLevels",
         "parameters": [
           {
@@ -1326,6 +1391,9 @@
           },
           "503": {
             "$ref": "#/components/responses/Unavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
           }
         },
         "summary": "Key levels (classified nodes) for one or more symbols",
@@ -1337,7 +1405,7 @@
     },
     "/v1/heatmap": {
       "get": {
-        "description": "Current per-strike heatmap for one or more symbols at the latest\nsnapshot. Includes the live `velocityPct` per strike. Pass multiple\ncomma-separated symbols for a single cross-asset (Trinity) call, and\n`expirations` to net each strike over specific expiration dates instead\nof the nearest `maxExpirations`.\n",
+        "description": "Current per-strike heatmap for one or more symbols at the latest\nsnapshot. Includes the live `velocityPct` per strike. Pass multiple\ncomma-separated symbols for a single cross-asset (Trinity) call, and\n`expirations` to net each strike over specific expiration dates instead\nof the nearest `maxExpirations`. A call that cannot finish within 20\nseconds answers `504` `gateway_timeout` (refunded); retry, or request\nfewer symbols.\n",
         "operationId": "getHeatmap",
         "parameters": [
           {
@@ -1399,7 +1467,7 @@
                               {
                                 "nodeType": "normal",
                                 "strike": 585,
-                                "value": 88010.0,
+                                "value": 88010,
                                 "velocityPct": 0.4
                               }
                             ],
@@ -1529,6 +1597,9 @@
           },
           "503": {
             "$ref": "#/components/responses/Unavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
           }
         },
         "summary": "Live per-strike heatmap (one or more symbols)",
@@ -1599,12 +1670,12 @@
                               {
                                 "nodeType": "king",
                                 "strike": 512,
-                                "value": 1500200.0
+                                "value": 1500200
                               },
                               {
                                 "nodeType": "gatekeeper",
                                 "strike": 515,
-                                "value": 410000.0
+                                "value": 410000
                               }
                             ],
                             "symbol": "SPY"
@@ -1806,9 +1877,9 @@
                                 "previousClose": 510.02,
                                 "spot": 512.4,
                                 "values": [
-                                  88010.0,
-                                  1500200.0,
-                                  410000.0
+                                  88010,
+                                  1500200,
+                                  410000
                                 ]
                               },
                               {
@@ -1929,7 +2000,7 @@
     },
     "/v1/stats/daily": {
       "get": {
-        "description": "Per symbol and UTC date: board spot open/high/low/close, the smallest\nand largest single cell of the day, and the mean and maximum over the\nday's frames of `max(|smallest cell|, |largest cell|)` (a measure of\nhow concentrated the exposure is, useful for ranking a universe).\nComputed from 1-minute history, so every frame of a day is one minute\napart (`frames` counts them). Weight `peakAbsMean` by `frames` to\naverage across days. Today's row has `complete: false` and changes as\nthe session goes on.\n\nUp to 50 symbols, 31 days and 400 symbol-days (symbols x days) per\ncall. Days with no data are omitted; a symbol with none is omitted.\nServed from the historical file store. **Cost:** 5 credits per call.\n",
+        "description": "Per symbol and US trading session (ET): board spot open/high/low/close,\nthe smallest and largest single cell of the session, and the mean and\nmaximum over the session's frames of `max(|smallest cell|, |largest cell|)`\n(a measure of how concentrated the exposure is, useful for ranking a\nuniverse). Computed from 1-minute history, so every frame is one minute\napart (`frames` counts them). Weight `peakAbsMean` by `frames` to\naverage across days.\n\n**Sessions.** `date` is the ET session date. By default a row covers\nthe regular session, 09:30-16:00 ET (frames stamped 09:30 up to\n15:59); `extended=true` covers 04:00-20:00 ET instead, including\npre- and post-market. Weekends and NYSE market holidays have no\nsession and no row, including for indices whose heatmap updates\naround the clock (SPX, SPXW, NDX, VIX). On early-close days the\nsession simply has fewer frames. `firstAt`/`lastAt` are UTC\ntimestamps. Today's row has `complete: false` until 30 minutes after\nthe session ends, and changes as the session goes on.\n\nUp to 50 symbols, 31 calendar days and 400 symbol-sessions (symbols x\ntrading days) per call. Sessions with no data are omitted; a symbol\nwith none is omitted. Served from the historical file store; finished\nsessions are cached, so repeat and overlapping calls are fast.\n**Cost:** 5 credits per call.\n",
         "operationId": "getDailyStats",
         "parameters": [
           {
@@ -1943,7 +2014,7 @@
             }
           },
           {
-            "description": "First UTC date (`YYYY-MM-DD`), not before 2023-03-28.",
+            "description": "First session date (`YYYY-MM-DD`, ET), not before 2023-03-28.",
             "in": "query",
             "name": "from",
             "required": true,
@@ -1953,13 +2024,23 @@
             }
           },
           {
-            "description": "Last UTC date (`YYYY-MM-DD`), inclusive. Default today; at most 31 days after `from`.",
+            "description": "Last session date (`YYYY-MM-DD`, ET), inclusive. Default today (ET); at most 31 calendar days after `from`.",
             "in": "query",
             "name": "to",
             "required": false,
             "schema": {
               "format": "date",
               "type": "string"
+            }
+          },
+          {
+            "description": "Cover the extended session (04:00-20:00 ET) instead of the regular session (09:30-16:00 ET).",
+            "in": "query",
+            "name": "extended",
+            "required": false,
+            "schema": {
+              "default": false,
+              "type": "boolean"
             }
           },
           {
@@ -2294,7 +2375,7 @@
     },
     "/v1/vol/cones": {
       "get": {
-        "description": "Tempest Cones: the move the options market prices for each horizon\n(`close`, `1d`, `week`, `opex`, `30d`), as 1-sigma percent and price bands\naround spot (from implied variance), plus the level set drawn on the\nchart. A horizon that does not exist at that moment (the `close`\nhorizon after hours) is null.\nResponse: `data.symbols[]` has `symbol`, `asOf`, `sessionDate`, `stale` and `cones`.\nSymbols Tempest does not cover are listed in `data.missing`. **Cost:** 1 credit per call (up to 10 symbols).\n",
+        "description": "Tempest Cones: the move the options market prices for each horizon\n(`close`, `1d`, `week`, `opex`, `30d`), as 1-sigma percent and price bands\naround spot (from implied variance), plus the level set drawn on the\nchart. A horizon that does not exist at that moment (the `close`\nhorizon after hours) is null.\n**Two different questions.** `horizons[]` is priced from the current\nspot: how much further options price the move from *now* to each\nsettle. It moves with price, so it is not a budget to measure a move\nagainst. `levels[]` is priced at a past close and does not move\nintraday: read how far a move has gone against `hi1` / `lo1` (1-sigma)\nand `hi2` / `lo2` (2-sigma).\n\n**Levels** (`levels[]`): `day` (the prior close, to today's close),\n`week` (last week's final close, to this week's last close) and `month`\n(the last monthly options expiration's close, to the next monthly\nexpiration's close). Each has `name`, `label`, `anchor`, `priced_at`,\n`until`, `em1_pct` and `hi1`/`lo1`/`hi2`/`lo2`. A level is absent when\nits anchor close has no reading.\n\n**Per horizon** (`horizons[]`): `name`, `minutes` to the settle,\n`em1_pct` (1-sigma, % of spot), `em1` / `em2` (1- and 2-sigma in price),\n`realized_em_pct` (20-day realized vol over the same span). Optional,\nnull when not available, and absent on older readings:\n- `up1_pct`, `dn1_pct`, `up2_pct`, `dn2_pct`: the move to each side in %\n  of spot as the options' skew prices it (put skew makes the downside\n  wider). Null: read `em1_pct` both ways.\n- `tail_src`: how the 2-sigma sides were read: `quantile` (from the\n  fitted smile, within the quoted strikes) or `wing` (twice the 1-sigma\n  side, which understates a steep tail).\n- `skew_expiry`: the expiration whose smile set that shape.\n- `events[]`: scheduled events inside the horizon (after `asOf`, at or\n  before the settle), each `{kind, label, at, timing, jump_pct,\n  var_share}`: `kind` is `earnings`, `fomc`, `cpi` or `nfp`; `at` is the\n  ISO-8601 instant it is modelled at; earnings add `timing` (`bmo` /\n  `amc`), `jump_pct` (the report's own implied move, %) and `var_share`\n  (the share of the horizon's priced variance that is the report, 0-1).\n- `event_adjusted`: true when this horizon's move includes an earnings\n  report.\nResponse: `data.symbols[]` has `symbol`, `asOf`, `sessionDate`, `stale` and `cones`.\nSymbols Tempest does not cover are listed in `data.missing`. **Cost:** 1 credit per call (up to 10 symbols).\n",
         "operationId": "getVolCones",
         "parameters": [
           {
@@ -2668,7 +2749,7 @@
         "operationId": "getVolScreener",
         "parameters": [
           {
-            "description": "Field to sort by (default `svx30`): svx30, svx1d, svx30_pct_1y,\nsvx1d_pct_1y, svx9_pct_1y, svx3m_pct_1y, iv_rank, iv_pct, ratio_vix,\nterm_slope, rr25_30, skew_pct_1y, tilt_21, tilt_z, tilt_pct_1y,\nem_1d_pct, running_sigma, sigma_odds_pct, expected_vrp,\nevent_move_pct, days_to_event, opt_vol, spot, spot_vol_corr,\ncheap_from_low_pct.\n",
+            "description": "Field to sort by (default `svx30`): svx30, svx1d, svx30_pct_1y,\nsvx1d_pct_1y, svx9_pct_1y, svx3m_pct_1y, iv_rank, iv_pct, ratio_vix,\nterm_slope, rr25_30, skew_pct_1y, tilt_21, tilt_z, tilt_pct_1y,\nem_1d_pct, running_sigma, sigma_odds_pct, expected_vrp,\nevent_move_pct, days_to_event, opt_vol, spot, spot_vol_corr,\ncheap_from_low_pct, day_pace, day_reprice.\n`day_pace` is today's move against the priced one-day move for the\ntime elapsed, in sigma; `day_reprice` is the one-day range options\nprice now over what they priced at the prior close for the rest of\nthe day (above 1: implied vol bid). Both are null outside regular\nhours.\n",
             "in": "query",
             "name": "sort",
             "schema": {

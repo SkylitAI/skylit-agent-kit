@@ -1,9 +1,12 @@
 {
   "heatseeker": {
-    "source_url": "https://www.skylit.ai/docs/openapi.yaml",
+    "source_url": "https://api.skylit.ai/v1/openapi.json",
     "checked": "2026-10-01",
-    "source_yaml_sha256": "b83333a73669ff2c13c4a8781afe60d75b13782b53f6fdb7588adfb6f17b55c1",
-    "snapshot_sha256": "dd5c5eeee878db7f7bccbb575951c0f57c9a94b42acc774869e945eecd198449"
+    "source_json_sha256": "b313e8caf8499128b18b76792a829a125c2a6c994c88b264dad2ed728b2ef968",
+    "snapshot_sha256": "2bd188f63d958fb3108479f356a1341fa787719055f6a42bea8dae3317404130",
+    "secondary_source_url": "https://www.skylit.ai/docs/openapi.yaml",
+    "secondary_yaml_sha256": "b83333a73669ff2c13c4a8781afe60d75b13782b53f6fdb7588adfb6f17b55c1",
+    "drift_note": "Unauthenticated public service contract returned HTTP200; same24 operation identities but newer dailyStats ET-session/extended parameter, Tempest descriptions and Meta freshness fields than website YAML. Service contract preferred; history pricing conflict remains."
   },
   "flowseeker": {
     "source_url": "https://www.skylit.ai/docs/flowseeker-openapi.yaml",

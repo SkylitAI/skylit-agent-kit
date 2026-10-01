@@ -1,7 +1,7 @@
 """Small stdlib helpers for the schema constructs used in the public snapshots.
 
-This is not a general JSON Schema implementation. Tests inventory every keyword
-used by these contracts; generation fails on unresolved external references.
+This is not a general JSON Schema implementation. It checks types, enums, numeric
+and length bounds, required fields, local references, unions and date formats.
 """
 import math
 import re
@@ -59,7 +59,8 @@ def valid(value, schema, document):
         if 'pattern' in schema and re.search(schema['pattern'], value) is None: return False
         try:
             if schema.get('format') == 'date' and date.fromisoformat(value).isoformat() != value: return False
-            if schema.get('format') == 'date-time' and datetime.fromisoformat(value).tzinfo is None: return False
+            if schema.get('format') == 'date-time':
+                if not re.fullmatch(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})',value) or datetime.fromisoformat(value).tzinfo is None: return False
         except ValueError: return False
     return True
 
