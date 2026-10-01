@@ -1,0 +1,11 @@
+{
+  "synthetic": true,
+  "ticker": "DEMO",
+  "as_of": "2026-09-30T20:00:00+00:00",
+  "revenue_period_current": "2026-Q2",
+  "revenue_period_previous": "2025-Q2",
+  "revenue_current_usd": 125000000,
+  "revenue_previous_usd": 100000000,
+  "call_premium_usd": 600000,
+  "put_premium_usd": 400000
+}
