@@ -7,3 +7,7 @@ Use your own account and least-privilege access. Revoke or rotate exposed keys. 
 The sample is offline and synthetic. The account example has one fixed HTTPS destination, rejects redirects, bounds response size and does not retry. It does not implement paid market-data workflows. Direct MCP clients use the host and service controls; this kit's prompt guidance cannot enforce their budgets.
 
 Pull-request checks must not receive production credentials or execute untrusted code in a privileged workflow. Do not add `pull_request_target` execution of contribution code. Review dependency changes and action pins. Generated reports stay local and are ignored by Git.
+
+## Proprietary knowledge boundary
+
+Private formulas, scoring logic, calibration values and strategies must stay outside this kit and community experiments. Consume documented service outputs; do not recreate private internals. The [source boundary](docs/source-boundary.md) applies to code, prompts, tests, datasets, screenshots and Git history. Automated tests and secret scanners do not establish that intellectual property is safe to publish.
