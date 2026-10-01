@@ -1,6 +1,6 @@
 # Ticker Investigator
 
-**Today:** a deterministic synthetic report. **Target:** a cited, dated research brief combining supported Skylit observations with SEC evidence.
+**Today:** this sample is a deterministic synthetic report. The separate [REST watchlist](../../docs/live-watchlist.md) implements GEX/VEX and recent flow using public contracts, with synthetic tests and authenticated verification pending. **Target:** a cited, dated research brief combining supported Skylit observations with SEC evidence.
 
 ## Report contract
 
