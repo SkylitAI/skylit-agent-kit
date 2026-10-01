@@ -1,0 +1,4 @@
+# Optional only: scripts/generate_endpoint_catalog.py --import-yaml.
+# Runtime, tests and normal JSON catalog regeneration use only the stdlib.
+# PyYAML is MIT licensed; see THIRD_PARTY.md.
+PyYAML==6.0.3
