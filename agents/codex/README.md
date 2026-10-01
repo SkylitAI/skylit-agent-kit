@@ -1,16 +1,19 @@
 # Codex setup
 
-Status: documentation-backed template; end-to-end Skylit authentication and tool discovery have not been certified in this kit.
+**Start by copying the [README prompt](../../README.md#copy-paste-start) into Codex.** Use a repository-scoped coding session that can run local commands. Access to this repository, Git and Python 3.11+ are needed; the agent can check prerequisites and explain anything missing. Do not attach a private vault.
 
-1. Open this repository in Codex and run the offline sample first.
-2. Provision a Skylit API key through your own account. Make `SKYLIT_API_KEY` available to the process running Codex; a desktop app may not inherit your terminal environment.
-3. Merge [config.example.toml](config.example.toml) into your existing Codex configuration, following the [official MCP configuration guide](https://learn.chatgpt.com/docs/extend/mcp?surface=cli). Do not replace existing configuration.
-4. Check the server with `codex mcp list` or the host's MCP controls. Ask for account usage only and confirm the discovered tool name matches `account_usage`.
+## Local workflows first
 
-The template allows only account lookup to start. Do not remove the allowlist wholesale. Add the exact read tools needed for an approved workflow after checking access and credit costs. If the gateway advertises a different name, verify it against the official catalogue before editing the allowlist.
+Read [AGENTS.md](../../AGENTS.md), follow [Start here](../../docs/start-here.md), and show the offline node-tracker chart. No MCP setup, Skylit key, Python packages or model API key is needed for these local examples. Codex account/subscription requirements are separate.
 
-Suggested first prompt:
+Use the [capability map](../../docs/capabilities.md) to route later questions to the four recipes, watchlist or all 77 endpoint previews. Local REST live paths are implemented with synthetic tests; authenticated verification is pending. They enforce documented request/credit caps and stop rules. Use the hidden terminal key prompt or secure process environment only for an authorized live plan; desktop processes may not inherit a terminal environment. Never paste keys into chat.
 
-> Read the Ticker Investigator workflow contract and run the offline sample. Explain which fields are fictional. If I explicitly ask to connect, inspect account usage only; do not query market data yet.
+## Optional direct MCP connection
 
-This configuration does not add a client-side credit ceiling. Tool timeouts and prompts do not enforce a workflow budget. The bounded live workflow is still planned. Keep sandbox and tool approvals enabled.
+This is a separate path; it is unnecessary for local examples. End-to-end Codex authentication and tool discovery are not certified in this kit.
+
+1. Provision a key through your Skylit account and make `SKYLIT_API_KEY` available securely to the process running Codex.
+2. Merge [config.example.toml](config.example.toml) into the existing configuration using the [official MCP configuration guide](https://learn.chatgpt.com/docs/extend/mcp?surface=cli). Do not replace existing configuration.
+3. Check `codex mcp list` or the host's MCP controls. Start with account usage only; verify the discovered name against the public tool catalog.
+
+The template allows only `account_usage`. Add exact read tools only for an authorized workflow after checking access and costs; never remove the allowlist wholesale. Direct MCP calls **do not inherit the local REST runner's credit ceilings**. Timeouts and prompts do not enforce a workflow budget. Keep sandbox and tool approvals enabled; honor already-authorized scope without redundant confirmation.

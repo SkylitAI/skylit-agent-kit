@@ -1,10 +1,18 @@
 # Skylit Agent Kit
 
-Build useful research workflows with Skylit's API and MCP, starting with a small example you can read, run and change.
+## Copy. Paste. Start.
 
-**Status: runnable examples, live certification pending.** Try four offline research workflows, a bounded GEX/VEX + flow watchlist, and previews for all 77 public API operations. Live paths are implemented and tested with synthetic responses; authenticated end-to-end verification is still pending. SEC research, the full free toolkit, and host certification remain on the [roadmap](docs/roadmap.md).
+**Click the copy button on this box, then paste it into your coding agent.** It will guide setup and show you a chart before you need an API key.
 
-## Your first result
+```text
+Get me started with https://github.com/SkylitAI/skylit-agent-kit. In a repository-scoped session, read AGENTS.md and docs/start-here.md before running commands. Handle setup, run the offline node-tracker demo, and show me the chart. Use docs/capabilities.md to help me choose and build my next workflow. Keep private vaults out and never request credentials in chat. Use live calls only within my authorized budget; publish only with my authorization.
+```
+
+Use a coding agent that can run local commands. Repository access is required while the kit is internal; the agent can check Git and Python 3.11+ and guide any setup. **No Skylit API key is needed for the first demo.** Agent subscriptions may have their own costs. [Start here](docs/start-here.md) · [Everything you can use](docs/capabilities.md) · [Codex](agents/codex/README.md) · [Claude](agents/claude/README.md).
+
+**Status:** offline examples work; live paths are synthetic-tested, with authenticated certification pending. Build useful research workflows using public Skylit contracts. [Remaining work](docs/roadmap.md).
+
+## Prefer the terminal?
 
 Requires Git and Python 3.11 or newer. No packages, account, API key or model are needed for the sample. On Windows, use `py -3` if `python3` is unavailable.
 

@@ -1,8 +1,17 @@
 # Examples
 
-- `fixtures/demo.json`: fictional input for the offline workflow.
-- `expected-brief.md`: output produced from that fixture.
-- `python3 -m skylit_agent_kit account`: explicit live REST access example.
+New here? [Copy the agent prompt](../README.md#copy-paste-start) or use [Start here](../docs/start-here.md). The [capability map](../docs/capabilities.md) covers all commands and their modes.
+
+| Example | Run or open | What it demonstrates |
+|---|---|---|
+| Fixed-strike chart | `python3 -m skylit_agent_kit use-case node-tracker` · [SVG preview](node-tracker.svg) | Exact strikes across changing axes and explicit gaps |
+| Prices, flow or volatility | [Four use cases](../docs/use-cases.md) · [synthetic fixtures](fixtures/use-cases/) | Default offline reports; optional saved JSON or authorized live plans |
+| Every public endpoint | `python3 -m skylit_agent_kit endpoints` · [77-entry audit](../docs/endpoint-audit.md) | Synthetic request/response shapes; bounded opt-in live runner |
+| Simple arithmetic brief | `python3 -m skylit_agent_kit sample` · [expected output](expected-brief.md) | Fictional [teaching fixture](fixtures/demo.json), not an API response |
+| Multi-symbol GEX/VEX + flow | `python3 -m skylit_agent_kit watchlist --dry-run` | Offline plan; [live watchlist guide](../docs/live-watchlist.md) |
+| Account access only | `python3 -m skylit_agent_kit account` | Explicit live GET; details below |
+
+Offline examples use no credentials or service calls. Reports are ignored local files; do not commit private inputs or outputs. Authenticated live behavior remains unverified.
 
 ## Live account lookup
 

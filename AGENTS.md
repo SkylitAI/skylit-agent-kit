@@ -1,5 +1,7 @@
 # Working on Skylit Agent Kit
 
+- For onboarding, follow [Start here](docs/start-here.md): produce the offline node-tracker chart, then route the next question using the [capability map](docs/capabilities.md). Prefer an existing command or recipe before building new tooling.
+
 - Keep the offline sample network-free, deterministic and clearly synthetic.
 - Run `python3 -m unittest discover -s tests -v` after behavior changes.
 - Read `docs/compatibility.md` before making integration support claims.
