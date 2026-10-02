@@ -11,7 +11,7 @@ Start with the [copy/paste prompt](../README.md#copy-paste-start) or [guided fir
 | `endpoints` | Offline catalog of all 77 operations; optional service filter and `--json` | No key or network |
 | `endpoint heatseeker.getHeatmap` | Synthetic request/response preview; `--show-parameters`; explicit `--live` for supplied parameters | Default caps: 10 credits / 2 requests / 30 seconds. Required live inputs never come from fictional preview defaults |
 | `sample` | Fictional brief with ordinary revenue/premium arithmetic; optional synthetic `--fixture` | No key/network; no live mode |
-| `account` | Explicit live account-only JSON using `SKYLIT_API_KEY` in process environment | One documented-free GET; no retries, fixed host and 1 MiB response cap. May print private account data; does not budget other commands |
+| `account --welcome` | Live account check with a local brand banner; environment key or hidden terminal prompt. Plain `account` retains full JSON output and requires an environment key | One documented-free GET; no retries, fixed host and 1 MiB response cap. Welcome omits account details; plain JSON may contain private data. Does not budget other commands |
 
 [Watchlist details](live-watchlist.md) · [Endpoint runner and limits](endpoint-demos.md) · [Every endpoint's purpose and ready command](endpoint-audit.md) · [Terminal quickstart](quickstart.md) · [Account example](../examples/README.md).
 
