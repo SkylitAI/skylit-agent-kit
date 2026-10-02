@@ -51,7 +51,9 @@ The standard plan reserves **10 documented credits and 12 requests**, including 
 python3 -m skylit_agent_kit watchlist --live --output reports/watchlist.md
 ```
 
-If needed, the terminal asks for your API key with typing hidden. Create it in your [Skylit Developer page](https://app.skylit.ai/developer); never paste it into an agent chat. The runner checks access, balance, symbol support and the complete plan before paid calls. It runs once without retries or automatic budget increases.
+If needed, the terminal asks for your API key with typing hidden; never paste it into an agent chat. Create a key under **API keys** on your [Skylit Developer page](https://app.skylit.ai/developer). Access requires a paid membership or invite code, plus accepting the API Terms once. Follow the [API-key steps](docs/start-here.md#getting-an-api-key-user-steps).
+
+The runner checks access, balance, symbol support and the complete plan before paid calls. It runs once without retries or automatic budget increases.
 
 The report separates board and trade timestamps and labels unavailable data. SPXW is never replaced with SPX. **Authenticated verification is pending.** See the [watchlist guide](docs/live-watchlist.md) for limits and expected output.
 
