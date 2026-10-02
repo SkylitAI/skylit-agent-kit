@@ -69,3 +69,26 @@ class TrackerTests(unittest.TestCase):
         for value in (10**400, json.loads('1e999')):
             p = payload(); p['data']['symbols'][0]['frames'][0]['values'][0] = value
             with self.assertRaises(ValueError): self.run_track(p)
+
+    def test_standalone_chart_preserves_credit_notices_and_synthetic_label(self):
+        import xml.etree.ElementTree as ET
+        from skylit_agent_kit.node_tracker import report
+        p = payload()
+        p['meta']['attribution'] = {'text': 'Powered by Skylit', 'shareable': False,
+            'url': 'javascript:alert(1)'}
+        p['disclaimer'] = '<script>source disclaimer</script>'
+        result = self.run_track(p)
+        svg = chart(result)
+        xml = ET.fromstring(svg)
+        links = xml.findall('.//{http://www.w3.org/2000/svg}a')
+        self.assertEqual([a.get('href') for a in links], ['https://skylit.ai/'])
+        visible_text = ' '.join(' '.join(xml.itertext()).split())
+        self.assertIn('Data: Skylit', visible_text)
+        self.assertIn('source disclaimer', visible_text)
+        self.assertIn('Powered by Skylit', visible_text)
+        self.assertNotIn('<script>', svg)
+        self.assertIn('[Data: Skylit](https://skylit.ai/)', report(result))
+        synthetic = chart(result, synthetic=True)
+        self.assertIn('SYNTHETIC / FICTIONAL DATA', synthetic)
+        self.assertIn('Demo by Skylit', synthetic)
+        self.assertNotIn('Data: Skylit', synthetic)

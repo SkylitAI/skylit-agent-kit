@@ -8,6 +8,16 @@ from skylit_agent_kit.__main__ import main
 from skylit_agent_kit.catalog import list_endpoints
 
 class EndpointCliTests(unittest.TestCase):
+    def test_unknown_endpoint_explains_how_to_discover_valid_ids(self):
+        with patch('sys.argv', ['kit', 'endpoint', 'missing.operation']), \
+             patch('skylit_agent_kit.endpoint_cli.credential', side_effect=AssertionError('No key')), \
+             patch.object(socket, 'socket', side_effect=AssertionError('No network')), \
+             contextlib.redirect_stderr(io.StringIO()) as error:
+            self.assertEqual(main(), 1)
+        self.assertIn('Unknown endpoint ID', error.getvalue())
+        self.assertIn('endpoints', error.getvalue())
+        self.assertNotIn('Traceback', error.getvalue())
+
     def test_all_cli_previews_run_without_secret_or_network(self):
         for endpoint in list_endpoints():
             with self.subTest(endpoint=endpoint['id']),patch('sys.argv',['kit','endpoint',endpoint['id']]), \

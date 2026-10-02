@@ -33,7 +33,10 @@ def run(args):
             print('Try: python3 -m skylit_agent_kit endpoint <ID>')
             print('Inspect inputs: python3 -m skylit_agent_kit endpoint <ID> --show-parameters')
         return 0
-    entry=catalog.get_endpoint(args.identity)
+    try:
+        entry=catalog.get_endpoint(args.identity)
+    except ValueError as error:
+        raise EndpointError(str(error)) from None
     if args.show_parameters:
         if args.live: raise EndpointError('--show-parameters is offline; omit --live.')
         print(json.dumps({'id':entry['id'],'parameters':entry['parameters'],'source':entry['provenance']['source_url']},indent=2))

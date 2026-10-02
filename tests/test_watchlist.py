@@ -264,3 +264,23 @@ class AdditionalWatchlistTests(unittest.TestCase):
         self.assertEqual(opener.return_value.open.call_count, 2)
         paths = [call.args[0].full_url for call in opener.return_value.open.call_args_list]
         self.assertEqual(paths, ['https://api.skylit.ai/v1/account', 'https://api.skylit.ai/v1/symbols'])
+
+    def test_report_keeps_source_notices_even_when_no_symbol_is_returned(self):
+        board = heat(); board['data']['symbols'] = []
+        board['meta']['attribution'] = {'text': 'Powered by Skylit', 'shareable': False,
+            'url': 'javascript:alert(1)', 'shareClass': 'raw'}
+        board['meta']['disclaimer'] = '<script>private source notice</script> [link](https://evil.invalid)'
+        client = FakeClient([ACCOUNT, CATALOG, board, heat(metric='vanna'), flow()])
+        result = run_watchlist(client, 'SPY')
+        self.assertEqual(result['source_notices'][0]['notices']['meta']['attribution']['shareable'], False)
+        report = render_report(result)
+        self.assertIn('[Data: Skylit](https://skylit.ai/)', report)
+        self.assertIn('Powered by Skylit', report)
+        self.assertIn('private source notice', report)
+        self.assertNotIn('<script>', report)
+        self.assertNotIn('[link](https://evil.invalid)', report)
+        self.assertIn('missing from heatmap response', report)
+
+    def test_credit_survives_missing_attribution_and_early_stop(self):
+        result = run_watchlist(FakeClient([ACCOUNT, CATALOG]), 'SPY', max_credits=2)
+        self.assertIn('[Data: Skylit](https://skylit.ai/)', render_report(result))

@@ -2,9 +2,11 @@
 from .use_case_errors import UseCaseError
 import argparse
 import json
+import os
 import re
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import quote
 
 from .node_tracker import chart, expiries, parse_time, report, track
 from .recipe_reports import render_recipe
@@ -108,6 +110,11 @@ def run(args):
         print(f'DRY RUN — no credentials, network or credits used. Plan: {credits} documented credits; {len(plans)+1} requests including free preflight.\n{plan_text}')
         print(f'Caps: {args.max_credits} credits / {args.max_requests} requests / {args.max_seconds:g} seconds.')
         return 0
+    if synthetic and not args.input:
+        if symbol != 'SPY':
+            raise UseCaseError('The bundled fictional demo uses SPY. Omit --symbol, or supply matching saved data with --input; --dry-run can plan other symbols without data.')
+        if args.recipe in ('node-tracker', 'price-levels') and args.metric != 'gamma':
+            raise UseCaseError('The bundled fictional demo uses gamma. Omit --metric, or supply matching saved data with --input; --dry-run can plan other metrics without data.')
     # Resolve every destination before network or credentials.
     stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
     root = Path(__file__).resolve().parents[1]
@@ -129,14 +136,16 @@ def run(args):
             raise UseCaseError('Response window differs from the requested comparison window.')
         body = report(result, synthetic)
         svg = chart(result, synthetic)
-        body += f'\n![Signed exposure over actual time]({svg_destination.name})\n'
+        body += f'\n![Signed exposure over actual time]({quote(svg_destination.name, safe="")})\n'
     else:
-        body = render_recipe(args.recipe, data, symbol, args.metric, start, end)
+        body = render_recipe(args.recipe, data, symbol, args.metric, start, end, synthetic=synthetic)
         body = ('**SYNTHETIC / FICTIONAL DATA**\n\n' if synthetic else '**User-supplied or live data — authenticity, freshness and comparability unverified.**\n\n') + body
     provenance = 'Bundled independent synthetic fixtures' if synthetic else ('User-supplied saved responses; authenticity/freshness unverified; no new requests' if args.input else 'Explicit live bounded request plan')
     body += f'\n\nProvenance: {provenance}.\n\n## Request plan\n\n{credits} documented credits / {len(plans)+1} requests including one free account preflight if executed live. This run used {"live requests" if args.live else "zero network requests and zero credits"}.\n\n'
     body += 'The plan below records selected parameters; for saved inputs it is a reproduction plan, not proof of how the saved file was acquired.\n\n```json\n' + plan_text + '\n```\n'
-    body += '\n## Build it yourself\n\n1. Choose one exact symbol and explicit coverage.\n2. Build the endpoint plans shown above with `plan_request`.\n3. Load saved JSON or execute the entire list once with `execute_plans` and explicit caps.\n4. Preserve source timestamps, gaps and labels; render the evidence tables locally.\n\nSee [the use-case tutorial](../docs/use-cases.md) for copyable commands and agent prompts.\n'
+    tutorial = Path(os.path.relpath(root / 'docs/use-cases.md', destination.parent)).as_posix()
+    body += '\n## Build it yourself\n\n1. Choose one exact symbol and explicit coverage.\n2. Build the endpoint plans shown above with `plan_request`.\n3. Load saved JSON or execute the entire list once with `execute_plans` and explicit caps.\n4. Preserve source timestamps, gaps and labels; render the evidence tables locally.\n\n'
+    body += f'See [the use-case tutorial]({quote(tutorial, safe="/")}) for copyable commands and agent prompts.\n'
     if svg_destination: save_private(svg_destination, svg)
     save_private(destination, body)
     print(body)

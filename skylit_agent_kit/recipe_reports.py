@@ -1,5 +1,6 @@
 """Small evidence reports. Scores/levels remain source outputs, never reconstructed."""
 from .use_case_errors import UseCaseError
+from .attribution import credit, notice_line, safe_metadata
 from datetime import datetime, timezone
 import re
 from .node_tracker import finite, fmt, parse_time, source_metadata
@@ -110,6 +111,9 @@ def volatility_context(payloads, symbol, metric, start, end):
     return '\n'.join(lines)
 
 
-def render_recipe(name, payloads, symbol, metric, start, end):
-    try: return {'price-levels': price_levels, 'flow-investigator': flow_investigator, 'volatility-context': volatility_context}[name](payloads, symbol, metric, start, end)
+def render_recipe(name, payloads, symbol, metric, start, end, synthetic=False):
+    try:
+        body = {'price-levels': price_levels, 'flow-investigator': flow_investigator, 'volatility-context': volatility_context}[name](payloads, symbol, metric, start, end)
+        notices = [safe_metadata(endpoint) + ' — ' + notice_line(payload) for endpoint, payload in payloads.items() if notice_line(payload)]
+        return body + '\n\n' + credit(synthetic) + '\n\n' + '\n'.join(notices)
     except (KeyError, TypeError, AttributeError, OverflowError, OSError): raise UseCaseError('Saved/source responses do not match this recipe schema.') from None

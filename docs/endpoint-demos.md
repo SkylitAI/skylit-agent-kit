@@ -61,7 +61,7 @@ python3 scripts/generate_endpoint_catalog.py
 python3 -m unittest discover -s tests -v
 ```
 
-A maintainer may explicitly import reviewed public YAML with `--import-yaml SERVICE=PATH` (developer-only PyYAML needed for that import). This replaces that service's snapshot/provenance; review service-versus-website drift before importing. Normal runtime, regeneration and tests use only the standard library. Tests compare the complete source operation set, resolve schemas, regenerate identical previews and exercise every eligible route through mocked HTTP. No authenticated requests were used for implementation validation.
+A maintainer may explicitly import reviewed public YAML with `--import-yaml SERVICE=PATH` (optional maintainer-only dependency: install `requirements-maintainer.txt` into a virtual environment for that import). This replaces that service's snapshot/provenance; review service-versus-website drift before importing. Normal runtime, regeneration and tests use only the standard library. Tests compare the complete source operation set, resolve schemas, regenerate identical previews and exercise every eligible route through mocked HTTP. No authenticated requests were used for implementation validation.
 
 ## Shared Python interface
 
@@ -76,3 +76,5 @@ validate_plan_for_live(plan)  # Offline validation; no credential lookup.
 ```
 
 Plans are JSON-serializable and contain fixed host/URL/method, validated parameters, reserved credit estimate and stream metadata. `execute_plans` returns payloads in order, with one shared account preflight and whole-batch caps; Atlas payloads may be arrays or strings. Do not alter a generated plan; build a new one with explicit parameters.
+
+Snapshot provenance identifies sources; it does not establish redistribution permission. See [third-party inventory and unresolved rights](../THIRD_PARTY.md).

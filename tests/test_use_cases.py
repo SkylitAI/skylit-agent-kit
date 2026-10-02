@@ -6,6 +6,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from urllib.parse import unquote
 from unittest.mock import patch
 from skylit_agent_kit import use_cases as u
 from skylit_agent_kit.node_tracker import chart, track
@@ -28,10 +29,68 @@ class UseCaseTests(unittest.TestCase):
             self.assertIn('Request plan',writes[-1][1]); self.assertIn('Build it yourself',writes[-1][1])
             self.assertIn('|',writes[-1][1])
 
+    def test_nested_reports_link_to_their_chart_and_tutorial(self):
+        import re
+        import socket
+        root = Path(__file__).resolve().parents[1]
+        reports = root / 'reports'
+        reports.mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=reports) as directory:
+            destination = Path(directory) / 'nested' / 'my chart (1) #2.md'
+            with patch.object(u, 'credential', side_effect=AssertionError('No key')), \
+                 patch.object(socket, 'socket', side_effect=AssertionError('No network')), \
+                 contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(u.run(self.args('node-tracker', '--output', str(destination))), 0)
+            body = destination.read_text(encoding='utf-8')
+            chart_link = re.search(r'!\[Signed exposure over actual time\]\(([^)]+)\)', body).group(1)
+            tutorial_link = re.search(r'\[the use-case tutorial\]\(([^)]+)\)', body).group(1)
+            self.assertNotIn(' ', chart_link)
+            self.assertNotIn('#', chart_link)
+            self.assertEqual((destination.parent / unquote(chart_link)).resolve(), destination.with_suffix('.svg'))
+            self.assertEqual((destination.parent / unquote(tutorial_link)).resolve(), root / 'docs/use-cases.md')
+
     def test_node_live_budget_stops_before_credentials(self):
         with patch.object(u,'credential',side_effect=AssertionError('key read')):
             with self.assertRaisesRegex(ValueError,'25 credits'):
                 u.run(self.args('node-tracker','--strikes','100,105','--live','--symbol','SPY','--from',START,'--to',END,'--expirations','2026-10-02'))
+
+    def test_internal_parent_symlink_prints_canonical_report_with_working_tutorial(self):
+        import re
+        root = Path(__file__).resolve().parents[1]
+        reports = root / 'reports'
+        reports.mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=reports) as directory:
+            folder = Path(directory)
+            actual = folder / 'actual' / 'deep'
+            actual.mkdir(parents=True)
+            alias = folder / 'alias'
+            try:
+                alias.symlink_to(actual, target_is_directory=True)
+            except OSError:
+                self.skipTest('Directory symlinks are unavailable on this host')
+            with contextlib.redirect_stdout(io.StringIO()) as output:
+                self.assertEqual(u.run(self.args('node-tracker', '--output', str(alias / 'report.md'))), 0)
+            canonical = actual / 'report.md'
+            body = canonical.read_text(encoding='utf-8')
+            link = re.search(r'\[the use-case tutorial\]\(([^)]+)\)', body).group(1)
+            self.assertEqual((actual / unquote(link)).resolve(), root / 'docs/use-cases.md')
+            self.assertIn(f'Saved report: {canonical}', output.getvalue())
+
+    def test_bundled_demo_explains_its_fixed_symbol_and_metric(self):
+        for name in u.NAMES:
+            with self.subTest(recipe=name), self.assertRaisesRegex(ValueError, 'fictional demo uses SPY.*--input'):
+                u.run(self.args(name, '--symbol', 'QQQ'))
+        for name in ('node-tracker', 'price-levels'):
+            with self.subTest(recipe=name), self.assertRaisesRegex(ValueError, 'fictional demo uses gamma.*--input'):
+                u.run(self.args(name, '--metric', 'vanna'))
+
+    def test_dry_run_can_plan_a_different_symbol_and_metric(self):
+        with patch.object(u, 'load_json', side_effect=AssertionError('No fixture needed')), \
+             patch.object(u, 'credential', side_effect=AssertionError('No key')), \
+             contextlib.redirect_stdout(io.StringIO()) as output:
+            self.assertEqual(u.run(self.args('node-tracker', '--dry-run', '--symbol', 'QQQ', '--metric', 'vanna')), 0)
+        self.assertIn('QQQ', output.getvalue())
+        self.assertIn('vanna', output.getvalue())
 
     def test_saved_input_is_not_mislabeled_synthetic(self):
         with tempfile.TemporaryDirectory() as d:
@@ -134,3 +193,15 @@ class UseCaseTests(unittest.TestCase):
             for identity, payload in data.items():
                 entry=get_endpoint(identity)
                 self.assertTrue(valid(payload,entry['schema'],get_contract(entry['service'])),identity)
+
+    def test_all_recipe_reports_keep_attribution_without_rendering_source_links(self):
+        for name in ('price-levels', 'flow-investigator', 'volatility-context'):
+            data = u.load_json(u.FIXTURES / (name + '.json'))
+            first = next(iter(data.values()))
+            first.setdefault('meta', {})['attribution'] = {'text': 'Powered by Skylit', 'url': 'javascript:alert(1)'}
+            first['disclaimer'] = '<img src=x onerror=alert(1)> source warning'
+            text = render_recipe(name, data, 'SPY', 'gamma', START, END)
+            self.assertIn('[Data: Skylit](https://skylit.ai/)', text)
+            self.assertIn('Powered by Skylit', text)
+            self.assertIn('source warning', text)
+            self.assertNotIn('<img', text)

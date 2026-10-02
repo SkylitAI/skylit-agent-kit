@@ -4,9 +4,11 @@
 
 ## First, see a chart
 
-After cloning the repository and opening its root directory:
+In a new terminal, clone the repository and run the demo. If you already have a checkout, open its root directory and run only the last command.
 
 ```sh
+git clone https://github.com/SkylitAI/skylit-agent-kit.git
+cd skylit-agent-kit
 python3 -m skylit_agent_kit use-case node-tracker
 ```
 
@@ -20,7 +22,7 @@ The bundled DEMO ticker, figures and timestamp are fictional. Nothing is fetched
 To save a local report:
 
 ```sh
-mkdir -p reports
+python3 -c "from pathlib import Path; Path('reports').mkdir(exist_ok=True)"
 python3 -m skylit_agent_kit sample > reports/demo.md
 ```
 
@@ -48,6 +50,9 @@ Use the [account example](../examples/README.md) to check access, or follow the 
 | `No module named skylit_agent_kit` | Run from the cloned repository root |
 | Python command missing | Install Python 3.11+; on Windows try `py -3` |
 | Invalid fixture | Compare your file with the bundled JSON; check timestamps, numeric values and `synthetic` |
+| Unknown endpoint ID | Run `python3 -m skylit_agent_kit endpoints`, then copy an exact ID |
+| Output file already exists | Choose a new `--output` filename; saved reports are never overwritten |
+| Output parent must be a directory | Use a folder beneath this repository's `reports/`; an existing file cannot be a parent folder |
 | Authentication/access error | Check the official Developer page; do not repeatedly retry |
 | No MCP tools | Check the host's connection state and permissions; record the host version in an issue |
 

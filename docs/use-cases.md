@@ -11,6 +11,16 @@ Run these from the repository root. All four commands default to **fictional fix
 
 Request counts include **one free account preflight for the whole plan**. Reports print the exact validated URLs, parameters and documented costs. No recipe polls, retries or raises its own budget. `--dry-run` prints only the plan.
 
+Use `--output "reports/my research/nodes.md"` to choose a report name or subfolder.
+Missing folders are created; existing files are never overwritten. Reports use
+UTF-8, and chart/tutorial links are relative to the saved report. Quote paths
+containing spaces when entering commands.
+
+The bundled examples contain fictional SPY data (gamma for exposure recipes).
+Changing `--symbol` or `--metric` does not generate another dataset. Use
+`--dry-run` to inspect a different plan, or `--input` with matching saved data to
+render it without network access.
+
 ## 1. Watch fixed strikes over time
 
 ![Synthetic fixed-strike replay](../examples/node-tracker.svg)

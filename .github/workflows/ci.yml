@@ -24,7 +24,7 @@ jobs:
       - name: Test with synthetic fixtures
         run: python -m unittest discover -s tests -v
       - name: Check syntax
-        run: python -m compileall -q skylit_agent_kit tests
+        run: python -m compileall -q skylit_agent_kit tests scripts
       - name: Verify reproducible example
         run: |
           python -m skylit_agent_kit sample > /tmp/skylit-demo.md

@@ -11,9 +11,9 @@ Start with the [copy/paste prompt](../README.md#copy-paste-start) or [guided fir
 | `endpoints` | Offline catalog of all 77 operations; optional service filter and `--json` | No key or network |
 | `endpoint heatseeker.getHeatmap` | Synthetic request/response preview; `--show-parameters`; explicit `--live` for supplied parameters | Default caps: 10 credits / 2 requests / 30 seconds. Required live inputs never come from fictional preview defaults |
 | `sample` | Fictional brief with ordinary revenue/premium arithmetic; optional synthetic `--fixture` | No key/network; no live mode |
-| `account` | Explicit live account-only JSON using `SKYLIT_API_KEY` in process environment | One documented-free GET; no retries, fixed host and 1 MiB response cap. May print private account data; does not budget other commands |
+| `account --welcome` | Live account check with a local brand banner; environment key or hidden terminal prompt. Plain `account` retains full JSON output and requires an environment key | One documented-free GET; no retries, fixed host and 1 MiB response cap. Welcome omits account details; plain JSON may contain private data. Does not budget other commands |
 
-[Watchlist details](live-watchlist.md) · [Endpoint runner and limits](endpoint-demos.md) · [Every endpoint's purpose and ready command](endpoint-audit.md) · [Sample quickstart](quickstart.md) · [Account example](../examples/README.md).
+[Watchlist details](live-watchlist.md) · [Endpoint runner and limits](endpoint-demos.md) · [Every endpoint's purpose and ready command](endpoint-audit.md) · [Terminal quickstart](quickstart.md) · [Account example](../examples/README.md).
 
 ## Four ready research workflows
 
@@ -26,9 +26,9 @@ Every recipe defaults to **synthetic data, zero calls and zero credits**. Prefix
 | `flow-investigator` | What was returned for this window? Recent trade sample beside top-N strike rollups | 4 credits / 3 requests |
 | `volatility-context` | What IV/cone context was returned? Source fields with freshness and coverage notes | 2 credits / 3 requests |
 
-Request counts include one free account preflight for the whole plan. [Recipe commands, saved-input formats and interpretation](use-cases.md). Output stays in ignored `reports/`; review before sharing. No trade execution, inferred probabilities or reconstructed service formulas.
+Request counts include one free account preflight for the whole plan. [Recipe commands, saved-input formats and interpretation](use-cases.md). Recipes save reports in ignored `reports/` and print their contents to the terminal, where an agent may capture them. Review before sharing. No trade execution, inferred probabilities or reconstructed service formulas.
 
-## What is implemented—and what is not certified
+## Implementation and verification
 
 - **Available:** local sample, fixed-strike SVG, four recipes, watchlist, and all 77 endpoint previews: 74 JSON, two bounded SSE and one text response. Generic previews illustrate schema shapes; they are not 77 complete research workflows. Changing preview request parameters does not recompute its fictional response.
 - **Live paths implemented with synthetic tests:** fixed destinations, refused redirects, bounded responses/requests/credit reservations, account checks and no retries/polling. SSE has event/time/byte caps and no reconnection. Tempest history live mode is blocked by contradictory published prices. Elapsed checks are not a strict process/DNS deadline; see [transport limits](endpoint-demos.md).
