@@ -61,7 +61,7 @@ When you want this run to use your Skylit account:
 python3 -m skylit_agent_kit watchlist --live --output reports/watchlist.md
 ```
 
-If needed, the terminal asks for your API key with typing hidden. Create it in your [Skylit Developer page](https://app.skylit.ai/developer); never paste it into an agent chat. No packages or model API key are required. The standard eight-symbol plan uses **12 requests / 10 documented credits** when your account allows a single heatmap batch. The program checks account access, balance, symbol support and the complete plan before paid calls, then runs once without retries. Unsupported or missing symbols stay visible; SPXW is never replaced with SPX.
+If needed, the terminal asks for your API key with typing hidden. Create it in your [Skylit Developer page](https://app.skylit.ai/developer) under **API keys** (requires a paid membership or invite code, and accepting the API Terms once; [step by step](docs/start-here.md#getting-an-api-key-user-steps)); never paste it into an agent chat. No packages or model API key are required. The standard eight-symbol plan uses **12 requests / 10 documented credits** when your account allows a single heatmap batch. The program checks account access, balance, symbol support and the complete plan before paid calls, then runs once without retries. Unsupported or missing symbols stay visible; SPXW is never replaced with SPX.
 
 The compact report shows source GEX/VEX nodes and recent flow, with separate board/trade times. This is implemented against the [public API contracts](docs/live-watchlist.md), with synthetic tests; a real account run has not yet been certified.
 
