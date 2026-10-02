@@ -39,7 +39,7 @@ Only the user can do these; the agent explains them and waits.
 1. **Access.** API and MCP access comes with a paid Skylit membership (see the plans table in the [official getting-started guide](https://www.skylit.ai/docs/api-reference/getting-started)) or a redeemed invite code. Without it, the [Developer page](https://app.skylit.ai/developer) shows "API access not enabled" with a redeem box.
 2. **Terms.** Open **Developer → API keys**, tick *I agree to the Skylit API Terms* and click **Agree and continue**. Keys cannot be created until this is done.
 3. **Create.** Click **New key**, name it (for example "Claude Code — laptop") and copy it from the *Key created* dialog. It is shown once; a lost key must be rotated or replaced. These are Developer keys, not the Flowseeker keys under Settings.
-4. **Provide.** Export `SKYLIT_API_KEY` in the shell that starts the agent, or leave it unset and type it at the hidden terminal prompt of a `--live` command. `.env` files are not read, and desktop agent apps may not inherit a terminal's environment; restart them from that shell if needed.
+4. **Provide.** Export `SKYLIT_API_KEY` in the shell that starts the agent, or leave it unset and use the hidden terminal prompt of `account --welcome` or a live data command. `.env` files are not read, and desktop agent apps may not inherit a terminal's environment; restart them from that shell if needed.
 5. **Check.** Run the command below after authorizing an account check. It uses the environment key or asks for it with typing hidden in an interactive terminal. It sends one documented-free account request, with no retry or market-data requests.
 
 ```sh
