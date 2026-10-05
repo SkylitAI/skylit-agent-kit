@@ -19,6 +19,7 @@ Requires Git and Python 3.11 or newer. No Python packages, Skylit account, API k
 ```sh
 git clone https://github.com/SkylitAI/skylit-agent-kit.git
 cd skylit-agent-kit
+python3 -m skylit_agent_kit doctor
 python3 -m skylit_agent_kit use-case node-tracker
 ```
 

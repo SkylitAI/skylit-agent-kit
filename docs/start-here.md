@@ -6,7 +6,7 @@
 
 | Step | What your agent does | What you get |
 |---|---|---|
-| 1. Open and check | Access this repository, read [AGENTS.md](../AGENTS.md), check Git and Python 3.11+ | Setup handled where possible; a clear next step if access or a prerequisite is missing |
+| 1. Open and check | Access this repository, read [AGENTS.md](../AGENTS.md), run `python3 -m skylit_agent_kit doctor` (offline: Python 3.11+, Git, checkout, agent permission, stored key) | Setup handled where possible; a clear next step if access or a prerequisite is missing |
 | 2. Show a result | Run the offline node tracker below; open its SVG and Markdown | A fictional chart with exact strikes, signs and visible gaps; zero service calls |
 | 3. Choose a question | Use the [capability map](capabilities.md) to pick one workflow | A relevant example or explanation of your saved report |
 | 4. Use your data when ready | Load saved JSON, or verify authorized account access and explain a live plan's inputs and caps | A branded connection welcome after a successful check, then a report with source timestamps and gaps |
