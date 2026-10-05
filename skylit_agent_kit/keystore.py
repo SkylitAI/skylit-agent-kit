@@ -36,6 +36,12 @@ def security(*arguments, stdin=None):
         raise KeystoreError('macOS Keychain is unavailable; no key was read or stored.') from None
 
 
+def describe():
+    if uses_keychain():
+        return f'macOS Keychain (item "{SERVICE}")'
+    return f'{key_path()} (readable only by you)'
+
+
 def save(key):
     if not isinstance(key, str) or not KEY_PATTERN.fullmatch(key):
         raise KeystoreError('That does not look like an API key (printable characters, no spaces). Nothing was stored.')
@@ -45,7 +51,7 @@ def save(key):
         command = f'add-generic-password -U -a {SERVICE} -s {SERVICE} -l "Skylit API key" -w "{quoted}"\n'
         if security('-i', stdin=command).returncode != 0:
             raise KeystoreError('macOS Keychain refused the key; nothing was stored.')
-        return f'macOS Keychain (item "{SERVICE}")'
+        return describe()
     path = key_path()
     path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
     path.parent.chmod(0o700)
@@ -55,7 +61,7 @@ def save(key):
     with os.fdopen(descriptor, 'w', encoding='utf-8') as stream:
         stream.write(key)
     path.chmod(0o600)
-    return f'{path} (readable only by you)'
+    return describe()
 
 
 def load():

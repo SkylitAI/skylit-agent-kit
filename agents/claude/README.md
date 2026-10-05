@@ -1,12 +1,12 @@
 # Claude setup
 
-**Using Claude Code or another Claude host that can run local commands?** Copy the [README prompt](../../README.md#copy-paste-start). The root [CLAUDE.md](../../CLAUDE.md) routes to [AGENTS.md](../../AGENTS.md), [Start here](../../docs/start-here.md) and the [capability map](../../docs/capabilities.md).
+**Using Claude Code or another Claude host that can run local commands?** Copy the [README prompt](../../README.md#copy-paste-connect). The root [CLAUDE.md](../../CLAUDE.md) routes to [AGENTS.md](../../AGENTS.md), [Start here](../../docs/start-here.md) and the [capability map](../../docs/capabilities.md).
 
 ## Local workflows first
 
-The first result is the offline node-tracker chart. Local commands need repository access, Git and Python 3.11+; no Skylit key or Python packages. Claude account/subscription requirements are separate. Keep the session repository-scoped without private vault context. If your host cannot run local commands, use a terminal with the [quickstart](../../docs/quickstart.md) or view the [fictional chart](../../examples/node-tracker.svg).
+The first result is a proven connection: `doctor`, then you store your key once with `login` (in the Claude app's Terminal panel or any terminal), then Claude runs `account --welcome` and offers a 1-credit live heatmap. Local commands need Git and Python 3.11+; no Python packages. Claude account/subscription requirements are separate. The repository's `.claude/settings.json` lets Claude Code run kit commands without approval prompts; paid calls still need `--live` and stay within each command's caps. Keep the session repository-scoped without private vault context. If your host cannot run local commands, use a terminal with the [quickstart](../../docs/quickstart.md). Without API access yet, view the [fictional chart](../../examples/node-tracker.svg).
 
-The four recipes, watchlist and endpoint runner provide bounded local REST live paths, implemented with synthetic tests; authenticated verification is pending. Choose one through the capability map. When live use is authorized, use the hidden terminal key prompt or secure process environment; never put keys in chat.
+The four recipes, watchlist and endpoint runner provide bounded local REST live paths, implemented with synthetic tests; authenticated verification is pending. Choose one through the capability map. Live commands use the key stored by `login` or a secure process environment; never put keys in chat.
 
 ## Optional Claude Desktop MCP connection
 

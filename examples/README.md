@@ -1,6 +1,6 @@
 # Examples
 
-New here? [Copy the agent prompt](../README.md#copy-paste-start) or use [Start here](../docs/start-here.md). The [capability map](../docs/capabilities.md) covers all commands and their modes.
+New here? [Copy the agent prompt](../README.md#copy-paste-connect) or use [Start here](../docs/start-here.md). The [capability map](../docs/capabilities.md) covers all commands and their modes.
 
 | Example | Run or open | What it demonstrates |
 |---|---|---|
