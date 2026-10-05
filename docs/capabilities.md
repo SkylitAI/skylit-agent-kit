@@ -1,6 +1,6 @@
 # What can I do with this kit?
 
-Start with the [copy/paste prompt](../README.md#copy-paste-start) or [guided first result](start-here.md). Run commands from the repository root; replace `python3` with `py -3` on Windows if needed. These are the **nine top-level commands** registered by the CLI; use `--help` for their exact options.
+Start with the [copy/paste prompt](../README.md#copy-paste-connect) or the [connection-first guide](start-here.md). Run commands from the repository root; replace `python3` with `py -3` on Windows if needed. These are the **nine top-level commands** registered by the CLI; use `--help` for their exact options.
 
 ## Choose a command
 
