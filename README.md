@@ -1,32 +1,54 @@
 # Skylit Agent Kit
 
-## Copy. Paste. Start.
+## Copy. Paste. Connect.
 
-**Click the copy button on this box, then paste it into your coding agent.** It will guide setup and show you a chart before you need an API key.
+**Click the copy button on this box, then paste it into your coding agent.** It checks your setup, connects your Skylit account, proves the connection and shows you live data.
 
 ```text
-Get me started with https://github.com/SkylitAI/skylit-agent-kit. In a repository-scoped session, read AGENTS.md and docs/start-here.md before running commands. Handle setup, run the offline node-tracker demo, and show me the chart. Use docs/capabilities.md to help me choose and build my next workflow. Keep private vaults out and never request credentials in chat. Use live calls only within my authorized budget; publish only with my authorization.
+Get me connected with https://github.com/SkylitAI/skylit-agent-kit. In a repository-scoped session, read AGENTS.md and docs/start-here.md before running commands. Run doctor, guide me to create my Skylit API key and store it with the login command in my own terminal (never in chat), then prove the connection with the welcome check. After that, offer the smallest live result and ask before spending any credits. Use docs/capabilities.md to help me choose my next workflow. Keep private vaults out.
 ```
 
-Use a coding agent that can run local commands. Repository access is required while the kit is internal; the agent can check Git and Python 3.11+ and guide any setup. **No Skylit API key is needed for the first demo.** Agent subscriptions may have their own costs. [Start here](docs/start-here.md) · [Everything you can use](docs/capabilities.md) · [Codex](agents/codex/README.md) · [Claude](agents/claude/README.md).
+Use a coding agent that can run local commands, such as Claude Code or Codex. You need Git, Python 3.11+ and a Skylit membership with API access (paid plan or invite code); the agent checks the first two and walks you through the key. Agent subscriptions may have their own costs. [Start here](docs/start-here.md) · [Everything you can use](docs/capabilities.md) · [Claude](agents/claude/README.md) · [Codex](agents/codex/README.md).
 
-**Available now:** an offline chart, four research workflows, a watchlist runner and 77 endpoint previews. Live paths have synthetic tests; authenticated service checks and host certification are still pending. [Verification status](docs/compatibility.md) · [Remaining work](docs/roadmap.md).
+**Available now:** a one-time key login, a connection check, four research workflows, a watchlist runner and 77 endpoint previews. Live paths have synthetic tests; authenticated service checks and host certification are still pending. [Verification status](docs/compatibility.md) · [Remaining work](docs/roadmap.md).
 
 ## Prefer the terminal?
 
-Requires Git and Python 3.11 or newer. No Python packages, Skylit account, API key or model are needed for the demo. On Windows, use `py -3` if `python3` is unavailable.
+Requires Git and Python 3.11 or newer; no Python packages. On Windows, use `py -3` if `python3` is unavailable.
 
 ```sh
 git clone https://github.com/SkylitAI/skylit-agent-kit.git
 cd skylit-agent-kit
+python3 -m skylit_agent_kit doctor
+python3 -m skylit_agent_kit login
+python3 -m skylit_agent_kit account --welcome
+```
+
+1. `doctor` checks your setup offline and prints one next step.
+2. `login` asks for your API key with typing hidden and stores it (macOS Keychain, or an owner-only file elsewhere). Create the key under **API keys** on your [Skylit Developer page](https://app.skylit.ai/developer); it is shown once. Never paste it into an agent chat.
+3. `account --welcome` makes one free account request and shows **Connected to Skylit** with your remaining credits and rate limit.
+
+Then fetch your first live data — one SPY gamma heatmap for **1 credit**:
+
+```sh
+python3 -m skylit_agent_kit endpoint heatseeker.getHeatmap --param symbols=SPY --param metric=gamma --live
+```
+
+[Four runnable workflows](docs/use-cases.md) cover strike changes, prices beside exposure levels, flow and volatility context. The [capability map](docs/capabilities.md) lists every command, its live cost and current limits.
+
+## No API access yet?
+
+Everything also runs offline on fictional data with zero service calls, so you can see what you'll get:
+
+```sh
 python3 -m skylit_agent_kit use-case node-tracker
 ```
 
-Open the printed `Saved chart` and `Saved report` paths. The chart uses **fictional data and zero service calls**. It follows the same strikes over time, showing signed exposure changes and gaps where observations are missing.
+Open the printed `Saved chart` and `Saved report` paths. The chart follows the same strikes over time, showing signed exposure changes and gaps where observations are missing.
 
 ![Fictional fixed-strike replay](examples/node-tracker.svg)
 
-[Four runnable workflows](docs/use-cases.md) cover strike changes, prices beside exposure levels, flow and volatility context. All start offline. The [capability map](docs/capabilities.md) lists commands, live costs and current limits. For a small calculation example you can edit, try the [sample quickstart](docs/quickstart.md#also-try-the-small-calculation-sample).
+For a small calculation example you can edit, try the [sample quickstart](docs/quickstart.md#also-try-the-small-calculation-sample).
 
 ## Explore any public endpoint
 
@@ -51,9 +73,7 @@ The standard plan reserves **10 documented credits and 12 requests**, including 
 python3 -m skylit_agent_kit watchlist --live --output reports/watchlist.md
 ```
 
-If needed, the terminal asks for your API key with typing hidden; never paste it into an agent chat. Create a key under **API keys** on your [Skylit Developer page](https://app.skylit.ai/developer). Access requires a paid membership or invite code, plus accepting the API Terms once. Follow the [API-key steps](docs/start-here.md#getting-an-api-key-user-steps).
-
-To check access before requesting market data, run `python3 -m skylit_agent_kit account --welcome`. A successful check shows the Skylit banner, **Connected to Skylit**, your remaining credits and rate limit, without printing your customer ID or raw account JSON. Your agent can [display the welcome inline](docs/start-here.md#show-the-connection-welcome).
+It uses the key you stored with `login` (or `SKYLIT_API_KEY`); with neither, an interactive terminal asks for it with typing hidden. Never paste a key into an agent chat. No key yet? Follow the [API-key steps](docs/start-here.md#2-create-your-api-key-you-in-the-browser).
 
 The runner checks access, balance, symbol support and the complete plan before paid calls. It runs once without retries or automatic budget increases.
 
@@ -61,7 +81,7 @@ The report separates board and trade timestamps and labels unavailable data. SPX
 
 Suggested agent prompt:
 
-> Run the watchlist dry-run for SPXW, SPY, QQQ, TSLA, MSFT, AAPL, AMZN and META. Explain the cost. When I ask for the live run, use the existing secure environment or guide me to the hidden terminal key prompt. Keep the default caps, report unavailable data explicitly, and show a compact report. Do not ask me to paste a key into chat.
+> Run the watchlist dry-run for SPXW, SPY, QQQ, TSLA, MSFT, AAPL, AMZN and META. Explain the cost. When I ask for the live run, use my stored key; if none is found, tell me to run login in my terminal. Keep the default caps, report unavailable data explicitly, and show a compact report. Do not ask me to paste a key into chat.
 
 ## Choose your next step
 

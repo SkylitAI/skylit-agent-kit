@@ -1,12 +1,12 @@
 # Codex setup
 
-**Start by copying the [README prompt](../../README.md#copy-paste-start) into Codex.** Use a repository-scoped coding session that can run local commands. Access to this repository, Git and Python 3.11+ are needed; the agent can check prerequisites and explain anything missing. Do not attach a private vault.
+**Start by copying the [README prompt](../../README.md#copy-paste-connect) into Codex.** Use a repository-scoped coding session that can run local commands. Access to this repository, Git and Python 3.11+ are needed; the agent can check prerequisites and explain anything missing. Do not attach a private vault.
 
 ## Local workflows first
 
-Read [AGENTS.md](../../AGENTS.md), follow [Start here](../../docs/start-here.md), and show the offline node-tracker chart. No MCP setup, Skylit key, Python packages or model API key is needed for these local examples. Codex account/subscription requirements are separate.
+Read [AGENTS.md](../../AGENTS.md) and follow [Start here](../../docs/start-here.md) connection-first: `doctor`, then the user stores their key once with `login` in their own terminal, then `account --welcome` and a 1-credit live heatmap after an explicit yes. No MCP setup, Python packages or model API key is needed. Without API access yet, show the offline node-tracker chart instead. Codex account/subscription requirements are separate.
 
-Use the [capability map](../../docs/capabilities.md) to route later questions to the four recipes, watchlist or all 77 endpoint previews. Local REST live paths are implemented with synthetic tests; authenticated verification is pending. They enforce documented request/credit caps and stop rules. Use the hidden terminal key prompt or secure process environment only for an authorized live plan; desktop processes may not inherit a terminal environment. Never paste keys into chat.
+Use the [capability map](../../docs/capabilities.md) to route later questions to the four recipes, watchlist or all 77 endpoint previews. Local REST live paths are implemented with synthetic tests; authenticated verification is pending. They enforce documented request/credit caps and stop rules. Live commands use the key stored by `login` or a secure process environment, only for an authorized live plan; desktop processes may not inherit a terminal environment, which is why `login` is preferred. Never paste keys into chat.
 
 ## Optional direct MCP connection
 

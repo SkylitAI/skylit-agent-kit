@@ -7,7 +7,7 @@ import os
 import sys
 
 from .account import AccountError, read_account
-from . import keystore
+from . import doctor, keystore
 from .keystore import KeystoreError
 from .sample import DEFAULT_FIXTURE, load_fixture, render_brief
 from .watchlist import WatchlistError
@@ -41,6 +41,7 @@ def main():
     account = commands.add_parser("account", help="Explicit live account lookup (one GET, no retries)")
     account.add_argument('--welcome', action='store_true',
                          help='Show a branded connection check instead of account JSON; supports a hidden key prompt')
+    commands.add_parser('doctor', help='Check setup offline and print the next step (no key value, no network)')
     commands.add_parser('login', help='Store your Skylit API key locally from a hidden terminal prompt')
     commands.add_parser('logout', help='Remove the locally stored Skylit API key')
     add_parser(commands)
@@ -48,6 +49,8 @@ def main():
     use_cases.add_parser(commands)
     args = parser.parse_args()
     try:
+        if args.command == 'doctor':
+            return doctor.run()
         if args.command == 'login':
             return login()
         if args.command == 'logout':
