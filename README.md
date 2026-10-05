@@ -28,11 +28,13 @@ python3 -m skylit_agent_kit account --welcome
 2. `login` asks for your API key with typing hidden and stores it (macOS Keychain, or an owner-only file elsewhere). Create the key under **API keys** on your [Skylit Developer page](https://app.skylit.ai/developer); it is shown once. Never paste it into an agent chat.
 3. `account --welcome` makes one free account request and shows **Connected to Skylit** with your remaining credits and rate limit.
 
-Then fetch your first live data — one SPY gamma heatmap for **1 credit**:
+Then draw your first live chart — SPY gamma by strike for **1 credit**:
 
 ```sh
-python3 -m skylit_agent_kit endpoint heatseeker.getHeatmap --param symbols=SPY --param metric=gamma --live
+python3 -m skylit_agent_kit first-chart --live
 ```
+
+It saves an SVG chart and a short Markdown summary in `reports/`. Without `--live` it draws the same chart from fictional data, for free. Use `--symbol QQQ` or `--metric vanna` for another board.
 
 [Four runnable workflows](docs/use-cases.md) cover strike changes, prices beside exposure levels, flow and volatility context. The [capability map](docs/capabilities.md) lists every command, its live cost and current limits.
 

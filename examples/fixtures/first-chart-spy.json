@@ -1,0 +1,96 @@
+{
+  "synthetic": true,
+  "note": "Fictional values for the offline first-chart demo. Not market data.",
+  "data": {
+    "symbols": [
+      {
+        "symbol": "SPY",
+        "asOf": "2026-09-30T14:00:00Z",
+        "spot": 500.4,
+        "previousClose": 498.0,
+        "priceChange": 2.4,
+        "priceChangePercent": 0.48,
+        "expirations": [
+          "2026-09-30",
+          "2026-10-01"
+        ],
+        "strikes": [
+          {
+            "strike": 480,
+            "value": -200000000,
+            "nodeType": "normal"
+          },
+          {
+            "strike": 483,
+            "value": 128997302,
+            "nodeType": "normal"
+          },
+          {
+            "strike": 486,
+            "value": 209016005,
+            "nodeType": "normal"
+          },
+          {
+            "strike": 489,
+            "value": -20500450,
+            "nodeType": "gatekeeper"
+          },
+          {
+            "strike": 492,
+            "value": -185858586,
+            "nodeType": "normal"
+          },
+          {
+            "strike": 495,
+            "value": -410562649,
+            "nodeType": "normal"
+          },
+          {
+            "strike": 498,
+            "value": -324561085,
+            "nodeType": "normal"
+          },
+          {
+            "strike": 501,
+            "value": 657061838,
+            "nodeType": "king"
+          },
+          {
+            "strike": 504,
+            "value": 333340503,
+            "nodeType": "normal"
+          },
+          {
+            "strike": 507,
+            "value": 407353721,
+            "nodeType": "normal"
+          },
+          {
+            "strike": 510,
+            "value": 173089764,
+            "nodeType": "normal"
+          },
+          {
+            "strike": 513,
+            "value": -192165075,
+            "nodeType": "normal"
+          },
+          {
+            "strike": 516,
+            "value": -411993217,
+            "nodeType": "normal"
+          },
+          {
+            "strike": 519,
+            "value": -320033105,
+            "nodeType": "normal"
+          }
+        ]
+      }
+    ]
+  },
+  "meta": {
+    "metric": "gamma",
+    "mode": "synthetic"
+  }
+}
