@@ -1,11 +1,14 @@
 """Run from the repository root: python3 -m skylit_agent_kit sample."""
 
 import argparse
+import getpass
 import json
 import os
 import sys
 
 from .account import AccountError, read_account
+from . import keystore
+from .keystore import KeystoreError
 from .sample import DEFAULT_FIXTURE, load_fixture, render_brief
 from .watchlist import WatchlistError
 from .watchlist_cli import add_parser, credential, run as run_watchlist_cli
@@ -13,6 +16,21 @@ from .endpoint_demo import EndpointError
 from . import endpoint_cli, use_cases
 from .use_case_errors import UseCaseError
 from .welcome import render_welcome
+
+
+def login():
+    if not sys.stdin.isatty():
+        print('login needs an interactive terminal for the hidden prompt. Run it in a terminal, not through an agent.', file=sys.stderr)
+        return 1
+    key = getpass.getpass('Paste your Skylit API key (input hidden): ').strip()
+    if not key:
+        print('No key entered; nothing was stored.', file=sys.stderr)
+        return 1
+    where = keystore.save(key)
+    print(f'Stored your key in {where}. It was not checked with Skylit yet.')
+    print('Next: python3 -m skylit_agent_kit account --welcome   (or tell your agent "done")')
+    print('Remove it any time: python3 -m skylit_agent_kit logout')
+    return 0
 
 
 def main():
@@ -23,11 +41,18 @@ def main():
     account = commands.add_parser("account", help="Explicit live account lookup (one GET, no retries)")
     account.add_argument('--welcome', action='store_true',
                          help='Show a branded connection check instead of account JSON; supports a hidden key prompt')
+    commands.add_parser('login', help='Store your Skylit API key locally from a hidden terminal prompt')
+    commands.add_parser('logout', help='Remove the locally stored Skylit API key')
     add_parser(commands)
     endpoint_cli.add_parser(commands)
     use_cases.add_parser(commands)
     args = parser.parse_args()
     try:
+        if args.command == 'login':
+            return login()
+        if args.command == 'logout':
+            print('Removed the stored Skylit API key.' if keystore.delete() else 'No stored Skylit API key was found.')
+            return 0
         if args.command in ('endpoints','endpoint'):
             return endpoint_cli.run(args)
         if args.command == 'use-case':
@@ -44,7 +69,7 @@ def main():
     except KeyboardInterrupt:
         print("Cancelled. No further requests will be sent.", file=sys.stderr)
         return 130
-    except (AccountError, WatchlistError, EndpointError, UseCaseError) as error:
+    except (AccountError, KeystoreError, WatchlistError, EndpointError, UseCaseError) as error:
         print(str(error), file=sys.stderr)
         return 1
     except (OSError, ValueError, UnicodeError) as error:

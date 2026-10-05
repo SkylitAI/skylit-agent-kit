@@ -1,6 +1,6 @@
 # What can I do with this kit?
 
-Start with the [copy/paste prompt](../README.md#copy-paste-start) or [guided first result](start-here.md). Run commands from the repository root; replace `python3` with `py -3` on Windows if needed. These are the **six top-level commands** registered by the CLI; use `--help` for their exact options.
+Start with the [copy/paste prompt](../README.md#copy-paste-start) or [guided first result](start-here.md). Run commands from the repository root; replace `python3` with `py -3` on Windows if needed. These are the **eight top-level commands** registered by the CLI; use `--help` for their exact options.
 
 ## Choose a command
 
@@ -11,7 +11,8 @@ Start with the [copy/paste prompt](../README.md#copy-paste-start) or [guided fir
 | `endpoints` | Offline catalog of all 77 operations; optional service filter and `--json` | No key or network |
 | `endpoint heatseeker.getHeatmap` | Synthetic request/response preview; `--show-parameters`; explicit `--live` for supplied parameters | Default caps: 10 credits / 2 requests / 30 seconds. Required live inputs never come from fictional preview defaults |
 | `sample` | Fictional brief with ordinary revenue/premium arithmetic; optional synthetic `--fixture` | No key/network; no live mode |
-| `account --welcome` | Live account check with a local brand banner; environment key or hidden terminal prompt. Plain `account` retains full JSON output and requires an environment key | One documented-free GET; no retries, fixed host and 1 MiB response cap. Welcome omits account details; plain JSON may contain private data. Does not budget other commands |
+| `login` / `logout` | Store your API key from a hidden terminal prompt (macOS Keychain, else an owner-only config file), or remove it | No network; `login` needs an interactive terminal and does not verify the key |
+| `account --welcome` | Live account check with a local brand banner, remaining credits and rate limit; environment key, stored key or hidden terminal prompt. Plain `account` retains full JSON output and requires an environment key | One documented-free GET; no retries, fixed host and 1 MiB response cap. Welcome omits customer ID, dollar balance and raw JSON; plain JSON may contain private data. Does not budget other commands |
 
 [Watchlist details](live-watchlist.md) · [Endpoint runner and limits](endpoint-demos.md) · [Every endpoint's purpose and ready command](endpoint-audit.md) · [Terminal quickstart](quickstart.md) · [Account example](../examples/README.md).
 

@@ -9,13 +9,13 @@ New here? [Copy the agent prompt](../README.md#copy-paste-start) or use [Start h
 | Every public endpoint | `python3 -m skylit_agent_kit endpoints` · [77-entry audit](../docs/endpoint-audit.md) | Synthetic request/response shapes; bounded opt-in live runner |
 | Simple arithmetic brief | `python3 -m skylit_agent_kit sample` · [expected output](expected-brief.md) | Fictional [teaching fixture](fixtures/demo.json), not an API response |
 | Multi-symbol GEX/VEX + flow | `python3 -m skylit_agent_kit watchlist --dry-run` | Offline plan; [live watchlist guide](../docs/live-watchlist.md) |
-| Connection welcome | `python3 -m skylit_agent_kit account --welcome` | One explicit account GET; branded confirmation without account details |
+| Connection welcome | `python3 -m skylit_agent_kit account --welcome` | One explicit account GET; branded confirmation with remaining credits and rate limit, without customer ID or raw JSON |
 
 Offline examples use no credentials or service calls. Reports are ignored local files; do not commit private inputs or outputs. Authenticated live behavior remains unverified.
 
 ## Live account lookup
 
-Create your own API key through the [Skylit Developer page](https://app.skylit.ai/developer). Use your secret manager or process environment to supply `SKYLIT_API_KEY`, or enter it at the welcome command's hidden terminal prompt. `.env.example` documents the variable; the runner does **not** load `.env` files automatically. Never paste a real key into a prompt, committed file or shell command saved in history.
+Create your own API key through the [Skylit Developer page](https://app.skylit.ai/developer). Store it once with `python3 -m skylit_agent_kit login`, use your secret manager or process environment to supply `SKYLIT_API_KEY`, or enter it at the welcome command's hidden terminal prompt. `.env.example` documents the variable; the runner does **not** load `.env` files automatically. Never paste a real key into a prompt, committed file or shell command saved in history.
 
 For an authorized connection check:
 

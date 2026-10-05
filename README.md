@@ -53,7 +53,7 @@ python3 -m skylit_agent_kit watchlist --live --output reports/watchlist.md
 
 If needed, the terminal asks for your API key with typing hidden; never paste it into an agent chat. Create a key under **API keys** on your [Skylit Developer page](https://app.skylit.ai/developer). Access requires a paid membership or invite code, plus accepting the API Terms once. Follow the [API-key steps](docs/start-here.md#getting-an-api-key-user-steps).
 
-To check access before requesting market data, run `python3 -m skylit_agent_kit account --welcome`. A successful check shows the Skylit banner and **Connected to Skylit**, without printing private account details. Your agent can [display the welcome inline](docs/start-here.md#show-the-connection-welcome).
+To check access before requesting market data, run `python3 -m skylit_agent_kit account --welcome`. A successful check shows the Skylit banner, **Connected to Skylit**, your remaining credits and rate limit, without printing your customer ID or raw account JSON. Your agent can [display the welcome inline](docs/start-here.md#show-the-connection-welcome).
 
 The runner checks access, balance, symbol support and the complete plan before paid calls. It runs once without retries or automatic budget increases.
 
