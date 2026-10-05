@@ -23,7 +23,7 @@ python3 -m skylit_agent_kit endpoint flowseeker.getFlow --param ticker=SPY --par
 
 Only `--live` uses the real parameters and account. Required inputs must be supplied again; no fictional trade ID, contract, symbol or date is silently copied from the preview. Obtain real OPRA contract symbols from a chain/trade result and real trade IDs from flow data. Use `--show-parameters` for each operation's required fields, types, enums and bounds.
 
-The existing secure `SKYLIT_API_KEY` process environment or hidden terminal prompt supplies authentication; never paste a key into chat or command arguments. No package installation or model key is required. A public metadata operation does not prompt when its verified transport permits unauthenticated access. As of 2026-10-01 only the Heatseeker spec route is treated as unauthenticated.
+The secure `SKYLIT_API_KEY` process environment, the key stored by `login`, or the hidden terminal prompt supplies authentication, in that order; never paste a key into chat or command arguments. No package installation or model key is required. A public metadata operation does not prompt when its verified transport permits unauthenticated access. As of 2026-10-01 only the Heatseeker spec route is treated as unauthenticated.
 
 `--max-credits 10 --max-requests 2 --max-seconds 30` are defaults, not automatic permissions to increase them. A historical-range request costs 25 documented credits and stops unless a caller explicitly chooses an adequate cap. `--output reports/endpoint.json` optionally saves owner-only output inside this repository's ignored reports directory and refuses overwrite. Account responses and raw market data can be private; keep them local unless sharing is explicitly authorized.
 

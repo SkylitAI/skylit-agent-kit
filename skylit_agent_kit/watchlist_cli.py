@@ -7,6 +7,7 @@ import warnings
 from datetime import datetime, timezone
 from pathlib import Path
 
+from . import keystore
 from .watchlist import DEFAULT_SYMBOLS, WatchlistError, execute_live, make_plan, number, render_report, valid_date
 
 
@@ -49,10 +50,10 @@ def save_private(path, content):
 
 
 def credential():
-    key = os.environ.get('SKYLIT_API_KEY')
+    key = os.environ.get('SKYLIT_API_KEY') or keystore.load()
     if key: return key
     if not sys.stdin.isatty():
-        raise WatchlistError('Open a terminal for the hidden key prompt, or provide SKYLIT_API_KEY securely in the process environment. Never paste a key into chat.')
+        raise WatchlistError('No Skylit API key found. In a terminal, run: python3 -m skylit_agent_kit login (hidden prompt, stored locally). Never paste a key into chat.')
     try:
         with warnings.catch_warnings():
             warnings.simplefilter('error', getpass.GetPassWarning)

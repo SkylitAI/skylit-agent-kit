@@ -27,8 +27,9 @@ class WatchlistCliTests(unittest.TestCase):
                 self.assertEqual(main(), 1)
 
     def test_noninteractive_missing_secret_stops_without_echo(self):
-        with patch.dict(os.environ, {}, clear=True), patch('sys.stdin.isatty', return_value=False):
-            with self.assertRaisesRegex(WatchlistError, 'hidden key prompt'): credential()
+        with patch.dict(os.environ, {}, clear=True), patch('sys.stdin.isatty', return_value=False), \
+                patch('skylit_agent_kit.keystore.load', return_value=None):
+            with self.assertRaisesRegex(WatchlistError, 'hidden prompt'): credential()
 
     def test_output_cannot_escape_ignored_reports(self):
         with self.assertRaises(WatchlistError): output_path('/private/tmp/escaped-report.md')
