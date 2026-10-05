@@ -1,14 +1,24 @@
 # Quickstart
 
-**Prefer copy/paste into an agent?** Use the [single README prompt](../README.md#copy-paste-start), then follow [Start here](start-here.md). This page is the manual terminal path. Requires repository access, Git and Python 3.11+; no API key for the offline examples.
+**Prefer copy/paste into an agent?** Use the [single README prompt](../README.md#copy-paste-connect), then follow [Start here](start-here.md). This page is the manual terminal path. Requires Git and Python 3.11+.
 
-## First, see a chart
+## First, connect
 
-In a new terminal, clone the repository and run the demo. If you already have a checkout, open its root directory and run only the last command.
+In a new terminal, clone the repository, check setup, store your key and prove the connection. If you already have a checkout, open its root directory and skip the first two commands.
 
 ```sh
 git clone https://github.com/SkylitAI/skylit-agent-kit.git
 cd skylit-agent-kit
+python3 -m skylit_agent_kit doctor
+python3 -m skylit_agent_kit login
+python3 -m skylit_agent_kit account --welcome
+```
+
+Create the key first under **API keys** on your [Developer page](https://app.skylit.ai/developer); `login` asks for it with typing hidden. The welcome makes one free request and shows your remaining credits. Details and failure steps: [Start here](start-here.md).
+
+## No API access yet? See a chart
+
+```sh
 python3 -m skylit_agent_kit use-case node-tracker
 ```
 
