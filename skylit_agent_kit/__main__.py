@@ -13,7 +13,7 @@ from .sample import DEFAULT_FIXTURE, load_fixture, render_brief
 from .watchlist import WatchlistError
 from .watchlist_cli import add_parser, credential, run as run_watchlist_cli
 from .endpoint_demo import EndpointError
-from . import endpoint_cli, use_cases
+from . import endpoint_cli, first_chart, use_cases
 from .use_case_errors import UseCaseError
 from .welcome import render_welcome
 
@@ -47,6 +47,7 @@ def main():
     add_parser(commands)
     endpoint_cli.add_parser(commands)
     use_cases.add_parser(commands)
+    first_chart.add_parser(commands)
     args = parser.parse_args()
     try:
         if args.command == 'doctor':
@@ -58,6 +59,8 @@ def main():
             return 0
         if args.command in ('endpoints','endpoint'):
             return endpoint_cli.run(args)
+        if args.command == 'first-chart':
+            return first_chart.run(args)
         if args.command == 'use-case':
             return use_cases.run(args)
         if args.command == 'watchlist':
@@ -76,7 +79,7 @@ def main():
         print(str(error), file=sys.stderr)
         return 1
     except (OSError, ValueError, UnicodeError) as error:
-        if args.command in ("watchlist", "endpoints", "endpoint", "use-case"):
+        if args.command in ("watchlist", "endpoints", "endpoint", "use-case", "first-chart"):
             print("Cannot complete command: check local file paths, permissions and input format.", file=sys.stderr)
         else:
             print(f"Cannot render sample: {error}", file=sys.stderr)

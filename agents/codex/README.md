@@ -4,7 +4,7 @@
 
 ## Local workflows first
 
-Read [AGENTS.md](../../AGENTS.md) and follow [Start here](../../docs/start-here.md) connection-first: `doctor`, then the user stores their key once with `login` in their own terminal, then `account --welcome` and a 1-credit live heatmap after an explicit yes. No MCP setup, Python packages or model API key is needed. Without API access yet, show the offline node-tracker chart instead. Codex account/subscription requirements are separate.
+Read [AGENTS.md](../../AGENTS.md) and follow [Start here](../../docs/start-here.md) connection-first: `doctor`, then the user stores their key once with `login` in their own terminal, then `account --welcome` and `first-chart --live` (a 1-credit chart) after an explicit yes. No MCP setup, Python packages or model API key is needed. Without API access yet, show the offline node-tracker chart instead. Codex account/subscription requirements are separate.
 
 Use the [capability map](../../docs/capabilities.md) to route later questions to the four recipes, watchlist or all 77 endpoint previews. Local REST live paths are implemented with synthetic tests; authenticated verification is pending. They enforce documented request/credit caps and stop rules. Live commands use the key stored by `login` or a secure process environment, only for an authorized live plan; desktop processes may not inherit a terminal environment, which is why `login` is preferred. Never paste keys into chat.
 
