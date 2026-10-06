@@ -1,8 +1,8 @@
 """Fixed display credit plus inert, complete source attribution/disclaimer notices."""
 import json
-from html import escape
 
 SKYLIT_URL = 'https://skylit.ai/'
+INERT = {ord(char): f'&#{ord(char)};' for char in '&<>"\'' + r'\`*_{}[]()|!:/#'}
 
 
 def credit(synthetic=False):
@@ -21,10 +21,8 @@ def notice_metadata(payload):
 
 def safe_metadata(value):
     """Preserve JSON values as inert text, including Markdown link delimiters."""
-    text = escape(json.dumps(value, ensure_ascii=True))
-    for char in r'\`*_{}[]()|!:/#':
-        text = text.replace(char, f'&#{ord(char)};')
-    return text
+    # One pass, so an entity written for one character is never re-escaped by a later one.
+    return json.dumps(value, ensure_ascii=True).translate(INERT)
 
 
 def notice_line(payload):

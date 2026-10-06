@@ -1,6 +1,6 @@
 # Working on Skylit Agent Kit
 
-- For onboarding, follow [Start here](docs/start-here.md) connection-first: `doctor`, user creates a key and runs `login` in their own terminal, `account --welcome`, then the 1-credit first live result after an explicit yes. Route the next question using the [capability map](docs/capabilities.md). The offline demos are the fallback for users without API access. Prefer an existing command or recipe before building new tooling.
+- For onboarding, follow [Start here](docs/start-here.md) connection-first. First show the user the five steps in the README's [What to expect](README.md#what-to-expect), then do exactly those steps: `doctor`, user creates a key and runs `login` in their own terminal, `account --welcome`, then the 1-credit first live result after an explicit yes. Route the next question using the [capability map](docs/capabilities.md). The offline demos are the fallback for users without API access. Prefer an existing command or recipe before building new tooling.
 
 - Keep the offline sample network-free, deterministic and clearly synthetic.
 - Run `python3 -m unittest discover -s tests -v` after behavior changes.

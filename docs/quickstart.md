@@ -14,7 +14,7 @@ python3 -m skylit_agent_kit login
 python3 -m skylit_agent_kit account --welcome
 ```
 
-Create the key first under **API keys** on your [Developer page](https://app.skylit.ai/developer); `login` asks for it with typing hidden. The welcome makes one free request and shows your remaining credits. Details and failure steps: [Start here](start-here.md).
+Create the key first under **API keys** on your [Developer page](https://app.skylit.ai/developer); `login` asks for it with typing hidden. The welcome makes one free request, shows your remaining credits and prints the 1-credit first live command. The five steps are listed under [What to expect](../README.md#what-to-expect); `doctor` marks where you are. Details and failure steps: [Start here](start-here.md).
 
 ## No API access yet? See a chart
 
@@ -63,7 +63,7 @@ Use the [account example](../examples/README.md) to check access, or follow the 
 | Unknown endpoint ID | Run `python3 -m skylit_agent_kit endpoints`, then copy an exact ID |
 | Output file already exists | Choose a new `--output` filename; saved reports are never overwritten |
 | Output parent must be a directory | Use a folder beneath this repository's `reports/`; an existing file cannot be a parent folder |
-| Authentication/access error | Check the official Developer page; do not repeatedly retry |
+| Authentication/access error | Follow the fix in the message (new key + `login`, or access and terms on the Developer page); do not repeatedly retry |
 | No MCP tools | Check the host's connection state and permissions; record the host version in an issue |
 
 Never include keys, account responses or private research in an issue.

@@ -2,15 +2,27 @@
 
 ## Copy. Paste. Connect.
 
-**Click the copy button on this box, then paste it into your coding agent.** It checks your setup, connects your Skylit account, proves the connection and shows you live data.
+**Click the copy button on this box, then paste it into your coding agent.** It shows you the five steps below, checks your setup, connects your Skylit account, proves the connection and shows you live data.
 
 ```text
-Get me connected with https://github.com/SkylitAI/skylit-agent-kit. In a repository-scoped session, read AGENTS.md and docs/start-here.md before running commands. Run doctor, guide me to create my Skylit API key and store it with the login command in my own terminal (never in chat), then prove the connection with the welcome check. After that, offer the smallest live result and ask before spending any credits. Use docs/capabilities.md to help me choose my next workflow. Keep private vaults out.
+Get me connected with https://github.com/SkylitAI/skylit-agent-kit. In a repository-scoped session, read AGENTS.md and docs/start-here.md before running commands. First show me what to expect, then run doctor, guide me to create my Skylit API key and store it with the login command in my own terminal (never in chat), then prove the connection with the welcome check. After that, offer the smallest live result and ask before spending any credits. Use docs/capabilities.md to help me choose my next workflow. Keep private vaults out.
 ```
 
 Use a coding agent that can run local commands, such as Claude Code or Codex. You need Git, Python 3.11+ and a Skylit membership with API access (paid plan or invite code); the agent checks the first two and walks you through the key. Agent subscriptions may have their own costs. [Start here](docs/start-here.md) · [Everything you can use](docs/capabilities.md) · [Claude](agents/claude/README.md) · [Codex](agents/codex/README.md).
 
 **Available now:** a one-time key login, a connection check, four research workflows, a watchlist runner and 77 endpoint previews. Live paths have synthetic tests; authenticated service checks and host certification are still pending. [Verification status](docs/compatibility.md) · [Remaining work](docs/roadmap.md).
+
+## What to expect
+
+1. **Check setup** (agent): runs `doctor`. Offline; one line per prerequisite.
+2. **Create a key** (you): Developer page → API keys → New key, in the browser. Shown once; never paste it into chat.
+3. **Store the key** (you): `python3 -m skylit_agent_kit login` in your own terminal. Hidden prompt; stored on this computer.
+4. **Prove the connection** (agent): runs `account --welcome`. One free account check; shows Connected to Skylit with your credits.
+5. **First live data** (agent, after you say yes): fetches one SPY gamma heatmap. Real strikes nearest spot with their timestamp; 1 credit.
+
+**Nothing spends credits before step 5, and step 5 waits for your yes.**
+
+The agent shows this path before it starts and marks your progress each time it runs `doctor`. Steps 2 and 3 are yours, because only you should handle the key.
 
 ## Prefer the terminal?
 
@@ -24,7 +36,7 @@ python3 -m skylit_agent_kit login
 python3 -m skylit_agent_kit account --welcome
 ```
 
-1. `doctor` checks your setup offline and prints one next step.
+1. `doctor` checks your setup offline, marks where you are on the five steps and prints one next step.
 2. `login` asks for your API key with typing hidden and stores it (macOS Keychain, or an owner-only file elsewhere). Create the key under **API keys** on your [Skylit Developer page](https://app.skylit.ai/developer); it is shown once. Never paste it into an agent chat.
 3. `account --welcome` makes one free account request and shows **Connected to Skylit** with your remaining credits and rate limit.
 
@@ -33,6 +45,8 @@ Then fetch your first live data — one SPY gamma heatmap for **1 credit**:
 ```sh
 python3 -m skylit_agent_kit endpoint heatseeker.getHeatmap --param symbols=SPY --param metric=gamma --live
 ```
+
+It prints a short summary first (spot, the board's timestamp, the five strikes nearest spot and **Data: Skylit**), followed by the full JSON response.
 
 [Four runnable workflows](docs/use-cases.md) cover strike changes, prices beside exposure levels, flow and volatility context. The [capability map](docs/capabilities.md) lists every command, its live cost and current limits.
 

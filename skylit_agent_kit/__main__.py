@@ -7,7 +7,7 @@ import os
 import sys
 
 from .account import AccountError, read_account
-from . import doctor, keystore
+from . import doctor, journey, keystore
 from .keystore import KeystoreError
 from .sample import DEFAULT_FIXTURE, load_fixture, render_brief
 from .watchlist import WatchlistError
@@ -28,26 +28,31 @@ def login():
         return 1
     where = keystore.save(key)
     print(f'Stored your key in {where}. It was not checked with Skylit yet.')
-    print('Next: python3 -m skylit_agent_kit account --welcome   (or tell your agent "done")')
-    print('Remove it any time: python3 -m skylit_agent_kit logout')
+    print(f'Next (step 4): {journey.KIT} account --welcome   (or tell your agent "done")')
+    print(f'Remove it any time: {journey.KIT} logout')
     return 0
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Skylit Agent Kit: offline-first starter")
-    commands = parser.add_subparsers(dest="command", required=True)
-    sample = commands.add_parser("sample", help="Render a fictional brief without network access")
-    sample.add_argument("--fixture", default=str(DEFAULT_FIXTURE), help="Synthetic JSON fixture")
-    account = commands.add_parser("account", help="Explicit live account lookup (one GET, no retries)")
+    parser = argparse.ArgumentParser(
+        prog=journey.KIT, formatter_class=argparse.RawDescriptionHelpFormatter,
+        description='Connect your Skylit account, then explore live data.\n\n' + journey.render_text())
+    commands = parser.add_subparsers(dest="command", metavar='{doctor,login,account,...}')
+    commands.add_parser('doctor', help='Step 1: check setup offline and print the next step (no key, no network)')
+    commands.add_parser('login', help='Step 3: store your Skylit API key from a hidden prompt in your own terminal')
+    account = commands.add_parser("account", help="Step 4: account check; add --welcome for the connection proof (free)")
     account.add_argument('--welcome', action='store_true',
                          help='Show a branded connection check instead of account JSON; supports a hidden key prompt')
-    commands.add_parser('doctor', help='Check setup offline and print the next step (no key value, no network)')
-    commands.add_parser('login', help='Store your Skylit API key locally from a hidden terminal prompt')
     commands.add_parser('logout', help='Remove the locally stored Skylit API key')
+    sample = commands.add_parser("sample", help="Render a fictional brief without network access")
+    sample.add_argument("--fixture", default=str(DEFAULT_FIXTURE), help="Synthetic JSON fixture")
     add_parser(commands)
     endpoint_cli.add_parser(commands)
     use_cases.add_parser(commands)
     args = parser.parse_args()
+    if args.command is None:
+        print(journey.render_start())
+        return 0
     try:
         if args.command == 'doctor':
             return doctor.run()
