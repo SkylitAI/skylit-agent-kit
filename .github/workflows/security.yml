@@ -52,7 +52,7 @@ jobs:
 
   codeql:
     name: CodeQL Python
-    # Internal/private repositories require GitHub Code Security to be enabled first.
+    # Runs automatically on this public repository; private copies need GitHub Code Security first.
     if: github.event.repository.visibility == 'public' || vars.ENABLE_CODEQL == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15

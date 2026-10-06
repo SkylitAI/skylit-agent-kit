@@ -2,21 +2,21 @@
 
 The [MIT license](LICENSE) covers this kit's original code and original documentation. It does not grant rights in upstream specifications, API responses, exchange data, third-party material, Skylit service access or trademarks. Public availability and a recorded hash establish provenance, not permission to redistribute.
 
-## Bundled contracts: release gate
+## Bundled contracts
 
 | Material | Recorded upstream source | Recorded check | Redistribution evidence |
 |---|---|---|---|
-| `skylit_agent_kit/contracts/heatseeker.json` | [Service JSON](https://api.skylit.ai/v1/openapi.json); [secondary website YAML](https://www.skylit.ai/docs/openapi.yaml) | 2026-10-01 | No `info.license` or `info.termsOfService` in snapshot; permission unresolved |
-| `skylit_agent_kit/contracts/flowseeker.json` | [Flowseeker YAML](https://www.skylit.ai/docs/flowseeker-openapi.yaml) | 2026-10-01 | No `info.license` or `info.termsOfService` in snapshot; permission unresolved |
-| `skylit_agent_kit/contracts/atlas.json` | [Atlas YAML](https://www.skylit.ai/docs/atlas-openapi.yaml) | 2026-10-01 | No `info.license` or `info.termsOfService` in snapshot; permission unresolved |
+| `skylit_agent_kit/contracts/heatseeker.json` | [Service JSON](https://api.skylit.ai/v1/openapi.json); [secondary website YAML](https://www.skylit.ai/docs/openapi.yaml) | 2026-10-01 | Redistribution approved by the rights owner, 2026-10-06 |
+| `skylit_agent_kit/contracts/flowseeker.json` | [Flowseeker YAML](https://www.skylit.ai/docs/flowseeker-openapi.yaml) | 2026-10-01 | Redistribution approved by the rights owner, 2026-10-06 |
+| `skylit_agent_kit/contracts/atlas.json` | [Atlas YAML](https://www.skylit.ai/docs/atlas-openapi.yaml) | 2026-10-01 | Redistribution approved by the rights owner, 2026-10-06 |
 
 Exact upstream and normalized snapshot SHA-256 hashes are in [provenance.json](skylit_agent_kit/contracts/provenance.json). The Heat snapshot records drift from the website YAML. This inventory does not re-fetch or certify the current live contract.
 
 `contracts/endpoints.json` and `docs/endpoint-audit.md` are generated from these snapshots and contain upstream descriptions and schema material. The same permission review applies to them. Schema-derived endpoint previews are fictional; fictional values do not clear rights in copied schema/prose. The separately authored sample and recipe fixtures in `examples/fixtures/`, and the chart in `examples/node-tracker.svg`, are labeled synthetic; preserve those labels.
 
-**Before public release:** the actual rights owner must approve redistribution of each snapshot and its derived catalog/documentation under specified terms, including any required notices. Record the approved terms and evidence without committing confidential correspondence. If approval is unavailable, remove or replace the affected material and regenerate/retest the dependent features before release. Changing only the current tree does not remove earlier Git objects. Do not rewrite shared history without a separately approved plan.
+**Approval:** Skylit, the rights owner of these specifications, approved on 2026-10-06 redistributing each snapshot and its derived catalog and documentation in this repository. The snapshots themselves carry no `info.license` or `info.termsOfService`, so this record is the permission. Any future snapshot from a different source needs its own review.
 
-The copyright-owning legal entity and contribution chain of title also require owner confirmation. The existing MIT file and its `2026 SkylitAI contributors` notice remain unchanged; this inventory does not assert legal ownership or relicense upstream material.
+The repository owner, who has authority for SkylitAI, confirmed the MIT license and its `2026 SkylitAI contributors` notice for the kit's original code and documentation. Upstream material is not relicensed by it.
 
 ## Dependencies and tooling
 

@@ -32,5 +32,5 @@ legend, gaps, fictional label and attribution link were visible. The preview was
 closed afterward. This verifies local rendering, not a host's Skylit connection.
 
 Native Windows execution, authenticated host/service behavior and hosted CI for
-the review branch remain unverified. Passing local checks does not close the
-[release gates](release-readiness.md).
+the review branch remain unverified. Passing local checks does not close the open items in
+[release status](release-readiness.md).

@@ -1,20 +1,20 @@
-# Public release readiness
+# Public release status
 
-**Not approved for public release.** This checklist separates implemented repository controls from owner and administrator decisions. It is not a legal clearance, live compatibility certification or complete security audit. Do not change visibility, publish a release, push this review branch or merge it without the corresponding authorization.
+**The repository is public** (GitHub visibility `public` since 2026-10-01). The repository owner approved the public release on 2026-10-06, including redistribution of the bundled contracts. This page records what that rests on and what is still open. It is not a live compatibility certification or a complete security audit.
 
-## Open release gates
+## Release gates
 
-| Gate | Required evidence / next action |
+| Gate | Status — 2026-10-06 |
 |---|---|
-| Copyright and contribution rights | Confirm the actual copyright-owning legal entity and authority to license the contributed material. Keep the current MIT license unchanged pending confirmation. |
-| Contract redistribution | Obtain explicit terms/permission for all three bundled snapshots and their generated derivatives listed in [THIRD_PARTY.md](../THIRD_PARTY.md), or replace/remove the material with an approved plan. Public URLs alone are not permission. |
-| Responsible reviewer | Obtain an exact GitHub user or `@SkylitAI/team` with write access. Then create `.github/CODEOWNERS` covering `*`, so source, workflows, licensing and security policy all require that owner. Verify GitHub accepts the file. No identity or team has been invented. |
-| Private reporting | Verify an actual confidential reporting route. GitHub's private-reporting endpoint returned 404 while the repo was internal; that does not confirm that it is enabled. During the approved publication process, enable/test private reporting and update [SECURITY.md](../SECURITY.md) before announcing release. |
-| Host security controls | Main protection below is applied; other proposed security settings still need approval and verification. Verify failing/successful PR behavior; workflow files alone do not enforce merging rules. |
-| Source and exposure review | Review all intended public history, branches, tags, logs, artifacts, issues/PRs and assets; privately resolve any finding. Human IP/provenance review is still required. No private vault comparison was performed. |
-| Exact revision checks | Run the complete offline matrix and security jobs against the final reviewed commit. A skipped CodeQL/dependency job is not evidence of analysis. Live evidence remains as stated in [compatibility.md](compatibility.md). |
+| Copyright and contribution rights | **Resolved.** The repository owner, who has authority for SkylitAI, confirmed the MIT license and its `2026 SkylitAI contributors` notice. |
+| Contract redistribution | **Resolved.** The rights owner (Skylit) approved redistributing the three bundled snapshots and their generated derivatives under the existing notices. See [THIRD_PARTY.md](../THIRD_PARTY.md). |
+| Responsible reviewer | **Resolved.** [.github/CODEOWNERS](../.github/CODEOWNERS) assigns `@prodij` (repository admin) to every path. Code-owner review is not yet a required merge rule. |
+| Private reporting | **Resolved.** GitHub private vulnerability reporting is enabled (API read-back 2026-10-06), and [SECURITY.md](../SECURITY.md) links the report form. |
+| Host security controls | **Mostly applied.** Secret scanning, non-provider patterns, validity checks and push protection are enabled; main protection is applied (below). Dependabot security updates are still disabled. The ruleset proposals below remain optional. |
+| Source and exposure review | **Done for the current history.** On 2026-10-06, Gitleaks scanned all 14 remote branches (39 commits) with zero findings. A keyword review of history and all PR/review text found no private vault material, internal hosts, account identifiers or keys. Commit author metadata includes contributors' email addresses, as Git always does. |
+| Exact revision checks | **Open.** `CodeQL Python` failed on main (2026-10-05) because Code Scanning could not process the uploaded SARIF. The cause is unconfirmed; a GitHub default CodeQL setup running alongside the advanced workflow would produce this. Live evidence remains as stated in [compatibility.md](compatibility.md): authenticated service checks are still pending. |
 
-## Read-only GitHub snapshot — 2026-10-01
+## Historical snapshot — 2026-10-01 (before publication)
 
 Inspected `main`: `a9439b9c2412300e08d409c8e8e1caf05fd4c2dc`. Repository visibility: **internal**. Main protection was false; repository/inherited ruleset listing was empty. Dependabot vulnerability alerts and security updates, Code Security, secret scanning, non-provider patterns, validity checks and push protection were disabled. Private reporting was unverified (404). Actions allowed all actions, did not require SHA pins, defaulted to read permissions, and could not approve pull requests. These settings were read only and may change independently of this branch.
 
@@ -26,9 +26,9 @@ branch; passing `test (3.11)` and `test (3.14)` checks bound to GitHub Actions a
 `15368`; resolved conversations; administrator enforcement; no force pushes,
 deletion or configured review bypass allowances. Code-owner and last-pusher
 approvals are not required. No visibility, access, tag or other security settings
-were changed. The ruleset proposals below remain separate, unapplied release gates.
+were changed. The ruleset proposals below remain separate and unapplied.
 
-## Additional administrator proposals — approval required
+## Optional administrator proposals — approval required
 
 1. **Merge rules:** [main-ruleset.json](release/main-ruleset.json) targets `main`, requires a PR, one independent approval including code-owner review, dismissal of stale approvals, approval after the latest push, resolved review threads, an up-to-date branch and passing checks. It blocks force pushes and deletion and has no bypass actors. It also requires CodeQL results with no high/critical security alerts or error-level alerts. Confirm a real code owner and working analyses before activation.
 2. **Required checks:** `test (3.11)`, `test (3.14)`, `Secret scan`, `Dependency review`, `CodeQL Python`, bound to GitHub Actions app ID `15368`. The two test names/app ID were verified on the base revision; the three new job names are proposals until an authorized branch run confirms them. Enable dependency graph/review and CodeQL first; make sure their jobs execute successfully, rather than skip, before these rules become the release gate.
@@ -43,7 +43,7 @@ The JSON files are reviewable REST request bodies, **not applied configuration**
 ## Implemented repository controls
 
 - Watchlist reports retain response attribution/disclaimers even when observations are missing; standalone SVGs include visible credit and a fixed Skylit link. Recipe reports preserve notices too. Source strings render as inert text. Synthetic examples keep their fictional labels.
-- MIT is unchanged. README and the third-party inventory separate kit licensing from API Data and upstream rights, with an explicit unresolved redistribution gate.
+- MIT is unchanged. README and the third-party inventory separate kit licensing from API Data and upstream rights, and record the owner-approved redistribution of the bundled contracts.
 - Offline CI is read-only, has full-SHA action pins, avoids persisted Git credentials and uses synthetic data. Gitleaks scans full fetched history with redaction; no report artifacts are uploaded. CodeQL's elevated permission is isolated to its job. No `pull_request_target` workflow executes contribution code.
 - Optional maintainer PyYAML is version-pinned, documented and included in weekly Dependabot checks. Runtime, normal generation and tests remain standard-library-only. The Gitleaks release/checksum needs manual update review.
 
