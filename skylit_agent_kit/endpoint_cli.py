@@ -2,6 +2,7 @@
 import json
 import sys
 from . import catalog
+from .heatmap_summary import summarize
 from .endpoint_demo import EndpointError, execute_plan, plan_request, preview, validate_plan_for_live
 from .watchlist import number
 from .watchlist_cli import credential, output_path, save_private
@@ -62,6 +63,8 @@ def run(args):
         print(f'Live plan: {requests} request(s), {plan["credits"]:g} reserved credits; no retries or polling.',file=sys.stderr)
         key=credential() if plan['auth_required'] else None
         payload=execute_plan(plan,key,args.max_credits,args.max_requests,args.max_seconds)
+        summary=summarize(payload,params.get('metric','')) if args.identity=='heatseeker.getHeatmap' else ''
+        if summary: print(summary+'\n',file=sys.stderr)  # Human-readable; stdout JSON is unchanged.
         result={'synthetic':False,'id':args.identity,'request':plan,'response':payload,
                 'next_step':entry['next_step'],'source':entry['provenance']['source_url'],
                 'usage_note':'Reservation is conservative, not a billing receipt or shared-account spending lock.'}
