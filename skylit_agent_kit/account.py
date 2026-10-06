@@ -6,6 +6,8 @@ from http.client import HTTPException
 from urllib.error import HTTPError, URLError
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
+from .journey import DEVELOPER_PAGE, LOGIN
+
 
 class AccountError(ValueError):
     """A sanitized account lookup failure, safe to show in a terminal."""
@@ -34,9 +36,10 @@ def read_account(api_key):
     except HTTPError as error:
         error.close()
         guidance = {
-            401: "Check or rotate the credential.",
+            401: f"The key was not accepted. Create a new key on {DEVELOPER_PAGE}, then run: {LOGIN}",
             402: "Check credits and account access.",
-            403: "Check entitlements and account access.",
+            403: (f"The key is invalid, revoked or expired, or the account lacks API access. Check access and "
+                  f"the API Terms on {DEVELOPER_PAGE}; for a new key, run: {LOGIN}"),
             429: "Rate limited; wait before a later manual attempt.",
             503: "Service unavailable; try manually later.",
         }.get(error.code, "Check the official service documentation.")

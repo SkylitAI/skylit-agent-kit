@@ -6,11 +6,11 @@ import sys
 from collections import namedtuple
 from pathlib import Path
 
-from . import keystore
+from . import journey, keystore
 
 ROOT = Path(__file__).resolve().parents[1]
 AGENT_ALLOW_RULE = 'Bash(python3 -m skylit_agent_kit:*)'
-LOGIN = 'python3 -m skylit_agent_kit login'
+LOGIN = journey.LOGIN
 SYMBOLS = {'ok': '✓', 'warn': '•', 'fail': '✗'}
 
 Check = namedtuple('Check', 'status label detail next_step', defaults=('',))
@@ -86,7 +86,8 @@ def check_key():
     if stored:
         return Check('ok', 'Skylit key', f'stored in {keystore.describe()}')
     return Check('warn', 'Skylit key', 'not stored yet',
-                 f'Create a key at https://app.skylit.ai/developer, then run in a terminal: {LOGIN}')
+                 f'Create a key at {journey.DEVELOPER_PAGE} (API keys → New key), '
+                 f'then run in your own terminal: {LOGIN}')
 
 
 def run_checks(root=ROOT):
@@ -94,13 +95,25 @@ def run_checks(root=ROOT):
             check_reports(root), check_key()]
 
 
+def current_step(checks):
+    """Doctor can only see setup and a stored key; the connection is proven by step 4 itself."""
+    if any(c.status == 'fail' for c in checks):
+        return 1
+    key = next((c for c in checks if c.label == 'Skylit key'), None)
+    return 4 if key is None or key.status == 'ok' else 2
+
+
 def render(checks):
     lines = [f'{SYMBOLS[c.status]} {c.label:<15} {c.detail}' for c in checks]
-    blocking = [c for c in checks if c.status == 'fail'] or [c for c in checks if c.status == 'warn']
+    step = current_step(checks)
+    lines += ['', journey.render_progress(step), '']
+    blocking = ([c for c in checks if c.status == 'fail']
+                or [c for c in checks if step == 2 and c.label == 'Skylit key']
+                or [c for c in checks if c.status == 'warn'])
     if blocking:
-        lines += ['', f'Next: {blocking[0].next_step}']
+        lines.append(f'Next: {blocking[0].next_step}')
     else:
-        lines += ['', 'Ready. Next: python3 -m skylit_agent_kit account --welcome (one free account check)']
+        lines.append(f'Ready. Next: {journey.KIT} account --welcome (one free account check)')
     return '\n'.join(lines)
 
 
