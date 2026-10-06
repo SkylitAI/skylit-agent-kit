@@ -1,6 +1,6 @@
 # Road to v0.1
 
-The chart, four research recipes, watchlist, endpoint previews and copy/paste onboarding are implemented. Authenticated service checks, host certification and public release remain pending. Milestones below describe the remaining evidence and work; they are not delivery dates.
+The chart, four research recipes, watchlist, endpoint previews and copy/paste onboarding are implemented. The repository is public. Authenticated service checks, host certification and a first tagged release remain pending. Milestones below describe the remaining evidence and work; they are not delivery dates.
 
 | Milestone | Deliverable | Current state |
 |---|---|---|
@@ -9,7 +9,7 @@ The chart, four research recipes, watchlist, endpoint previews and copy/paste on
 | 3. Free toolkit | Seven curated capabilities with examples and failure handling | Catalogue and FRED guide present; local fixed-strike SVG and Atlas price-context recipe implemented; broader free-source adapters pending |
 | 4. Agent setups | Fresh-machine Claude and Codex runs; other host probes | Guides/templates present; host certification pending |
 | 5. Member pilot | Five members, onboarding fixes and a rehearsed contribution | Pending |
-| 6. Public release | Tested tag, demo, access, support ownership and triage | Pending; the repository is internal and has no release tag |
+| 6. Public release | Tested tag, demo, access, support ownership and triage | Repository public with owner approval and private reporting; no release tag yet |
 
 ## Next implementation tasks
 
@@ -31,4 +31,4 @@ The chart, four research recipes, watchlist, endpoint previews and copy/paste on
 
 Four of five members produce and open the offline node-tracker chart unassisted within ten minutes; all five reach a live result after access is provisioned; at least two return or customize within seven days; one exercises the contribution path; no credential or budget failure. These are learning gates, not proof of market demand.
 
-Before public release, assign code/review ownership, record supported host versions, measure cost per completed brief, finish dependency/data attribution checks and confirm repository visibility. Track useful completed workflows, repeat use, support effort and accepted contributions.
+Before the first tagged release, record supported host versions, measure cost per completed brief, finish dependency/data attribution checks and confirm repository visibility. Track useful completed workflows, repeat use, support effort and accepted contributions.

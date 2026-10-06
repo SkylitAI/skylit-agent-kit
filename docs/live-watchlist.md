@@ -13,7 +13,7 @@ python3 -m skylit_agent_kit watchlist --live --output reports/watchlist.md
 
 The first command is offline: it does not read a key, contact a service or write reports. The second explicitly opts into one live run. If no `SKYLIT_API_KEY` is provided securely to this process and no key was stored with `login`, an interactive terminal prompts for it with typing hidden. Create your own key at the [Developer page](https://app.skylit.ai/developer). Never paste it into chat, put it in command arguments or commit it. The program does not load `.env` files. A noninteractive agent without a key stops and tells the user to run `login` in a terminal.
 
-No model, extra Python packages, agent installation or global configuration changes are needed. The only personal step is provisioning access through your own Skylit account. Repository access is separate; an internal GitHub repository requires authorization.
+No model, extra Python packages, agent installation or global configuration changes are needed. The only personal step is provisioning access through your own Skylit account. The repository itself is public.
 
 Default symbols: **SPXW, SPY, QQQ, TSLA, MSFT, AAPL, AMZN, META**. Duplicates are removed in order. Customize them with `--symbols NVDA,SPY`; SPXW is never silently replaced with SPX. The free heatmap catalog controls heatmap availability only; flow is attempted independently for every requested symbol.
 

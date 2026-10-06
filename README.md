@@ -120,7 +120,7 @@ flowchart LR
 
 ## What belongs here
 
-This kit holds maintained examples, shared helpers, agent setup guides and tested workflows. [Skylit Agent Lab](https://github.com/SkylitAI/skylit-agent-lab) provides a runnable template and contribution checks for experiments. A useful experiment can graduate through a reviewed kit pull request. Both repositories are currently internal.
+This kit holds maintained examples, shared helpers, agent setup guides and tested workflows. [Skylit Agent Lab](https://github.com/SkylitAI/skylit-agent-lab) provides a runnable template and contribution checks for experiments. A useful experiment can graduate through a reviewed kit pull request. Both repositories are public.
 
 The code license does not include Skylit service access or third-party data rights. Free sources can have usage limits, and your agent or model may have its own costs. Check current access in the [Skylit Developer page](https://app.skylit.ai/developer) and [official docs](https://www.skylit.ai/docs/api-reference/getting-started).
 
@@ -139,4 +139,4 @@ Original kit code and documentation use the [MIT license](LICENSE). API access, 
 
 Shared live-data reports include **Data: Skylit** with a link; preserve this credit and any source notices. Attribution does not grant redistribution rights. See the [API Terms](https://www.skylit.ai/api-terms) before sharing, especially for bulk, scheduled, real-time or commercial use.
 
-**Public release remains gated** on confirmed legal ownership and permission to redistribute the bundled contracts and their generated derivatives. [Release readiness](docs/release-readiness.md) also records pending reviewer, private reporting and GitHub security settings. Passing offline tests does not resolve these gates or certify live integrations.
+The bundled API contracts and their generated catalog are redistributed with Skylit's approval. [Release status](docs/release-readiness.md) records the approvals, the security settings and what is still open. Report vulnerabilities privately through [SECURITY.md](SECURITY.md). Passing offline tests does not certify live integrations.
