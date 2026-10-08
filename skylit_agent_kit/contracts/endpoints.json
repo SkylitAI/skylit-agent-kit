@@ -9803,7 +9803,8 @@
     },
     "provenance": {
       "checked": "2026-10-01",
-      "snapshot_sha256": "7e7f2835f2d2fd0de10ba1c94aba01825383d681cb6f3cd48f1fa9e5b7a622f2",
+      "drift_note": "2026-10-08: removed the futures symbol type from the /v1/config example (futures are not available through the API); otherwise the 2026-10-01 snapshot.",
+      "snapshot_sha256": "1981c23ee538f09fab6a5f8f806d10299f2ee96c2d6fe6ca4481ec1965521ec2",
       "source_url": "https://www.skylit.ai/docs/atlas-openapi.yaml",
       "source_yaml_sha256": "d9c8837a3a27ad65a5a917a1e4b974b0829c292e2e4ef99657141ad08137e341"
     },
@@ -9950,7 +9951,8 @@
     },
     "provenance": {
       "checked": "2026-10-01",
-      "snapshot_sha256": "7e7f2835f2d2fd0de10ba1c94aba01825383d681cb6f3cd48f1fa9e5b7a622f2",
+      "drift_note": "2026-10-08: removed the futures symbol type from the /v1/config example (futures are not available through the API); otherwise the 2026-10-01 snapshot.",
+      "snapshot_sha256": "1981c23ee538f09fab6a5f8f806d10299f2ee96c2d6fe6ca4481ec1965521ec2",
       "source_url": "https://www.skylit.ai/docs/atlas-openapi.yaml",
       "source_yaml_sha256": "d9c8837a3a27ad65a5a917a1e4b974b0829c292e2e4ef99657141ad08137e341"
     },
@@ -9994,7 +9996,8 @@
     },
     "provenance": {
       "checked": "2026-10-01",
-      "snapshot_sha256": "7e7f2835f2d2fd0de10ba1c94aba01825383d681cb6f3cd48f1fa9e5b7a622f2",
+      "drift_note": "2026-10-08: removed the futures symbol type from the /v1/config example (futures are not available through the API); otherwise the 2026-10-01 snapshot.",
+      "snapshot_sha256": "1981c23ee538f09fab6a5f8f806d10299f2ee96c2d6fe6ca4481ec1965521ec2",
       "source_url": "https://www.skylit.ai/docs/atlas-openapi.yaml",
       "source_yaml_sha256": "d9c8837a3a27ad65a5a917a1e4b974b0829c292e2e4ef99657141ad08137e341"
     },
@@ -10065,7 +10068,8 @@
     },
     "provenance": {
       "checked": "2026-10-01",
-      "snapshot_sha256": "7e7f2835f2d2fd0de10ba1c94aba01825383d681cb6f3cd48f1fa9e5b7a622f2",
+      "drift_note": "2026-10-08: removed the futures symbol type from the /v1/config example (futures are not available through the API); otherwise the 2026-10-01 snapshot.",
+      "snapshot_sha256": "1981c23ee538f09fab6a5f8f806d10299f2ee96c2d6fe6ca4481ec1965521ec2",
       "source_url": "https://www.skylit.ai/docs/atlas-openapi.yaml",
       "source_yaml_sha256": "d9c8837a3a27ad65a5a917a1e4b974b0829c292e2e4ef99657141ad08137e341"
     },
@@ -10145,7 +10149,8 @@
     },
     "provenance": {
       "checked": "2026-10-01",
-      "snapshot_sha256": "7e7f2835f2d2fd0de10ba1c94aba01825383d681cb6f3cd48f1fa9e5b7a622f2",
+      "drift_note": "2026-10-08: removed the futures symbol type from the /v1/config example (futures are not available through the API); otherwise the 2026-10-01 snapshot.",
+      "snapshot_sha256": "1981c23ee538f09fab6a5f8f806d10299f2ee96c2d6fe6ca4481ec1965521ec2",
       "source_url": "https://www.skylit.ai/docs/atlas-openapi.yaml",
       "source_yaml_sha256": "d9c8837a3a27ad65a5a917a1e4b974b0829c292e2e4ef99657141ad08137e341"
     },
@@ -10182,7 +10187,8 @@
     },
     "provenance": {
       "checked": "2026-10-01",
-      "snapshot_sha256": "7e7f2835f2d2fd0de10ba1c94aba01825383d681cb6f3cd48f1fa9e5b7a622f2",
+      "drift_note": "2026-10-08: removed the futures symbol type from the /v1/config example (futures are not available through the API); otherwise the 2026-10-01 snapshot.",
+      "snapshot_sha256": "1981c23ee538f09fab6a5f8f806d10299f2ee96c2d6fe6ca4481ec1965521ec2",
       "source_url": "https://www.skylit.ai/docs/atlas-openapi.yaml",
       "source_yaml_sha256": "d9c8837a3a27ad65a5a917a1e4b974b0829c292e2e4ef99657141ad08137e341"
     },
