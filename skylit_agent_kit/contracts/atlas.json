@@ -606,10 +606,6 @@
                         {
                           "name": "index",
                           "value": "index"
-                        },
-                        {
-                          "name": "futures",
-                          "value": "futures"
                         }
                       ]
                     }
